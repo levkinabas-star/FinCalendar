@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense, useMemo, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import BottomNav from './components/BottomNav';
 import Modal from './components/Modal';
 import TransactionForm from './components/TransactionForm';
@@ -233,10 +234,14 @@ function WidgetActionHandler({ openAdd }: { openAdd: (mode: 'expense' | 'income'
     };
     window.addEventListener('widgetAction', onWidgetAction);
 
-    // Fallback: visibilitychange for cases where onNewIntent is not reliable
+    // On app foreground: check widget actions and pending YooKassa payment (native only)
     const onVisible = () => {
       if (document.visibilityState === 'visible') {
         WidgetData.getPendingAction().then(({ action }) => { if (action) handle(action); }).catch(() => {});
+        if (Capacitor.isNativePlatform()) {
+          const pendingId = localStorage.getItem('yk_pending_payment_id');
+          if (pendingId) navigate('/payment-return');
+        }
       }
     };
     document.addEventListener('visibilitychange', onVisible);

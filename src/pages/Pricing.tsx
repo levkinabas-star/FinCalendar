@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Crown, Check, ArrowLeft, Sparkles, Tag, CheckCircle, XCircle } from 'lucide-react';
-import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { useStore } from '../store';
 import { FREE_LIMITS } from '../plan';
@@ -89,12 +88,10 @@ export default function Pricing() {
       localStorage.setItem('yk_pending_payment_id', id);
 
       if (Capacitor.isNativePlatform()) {
-        // In-app browser overlay keeps the app context intact
-        await Browser.open({ url: confirmationUrl });
-        Browser.addListener('browserFinished', () => {
-          Browser.removeAllListeners();
-          navigate('/payment-return');
-        });
+        // Opens in system browser; app stays alive with localStorage intact.
+        // When user returns to the app, visibilitychange triggers payment check.
+        window.open(confirmationUrl, '_system');
+        setActivating(false);
       } else {
         window.location.href = confirmationUrl;
       }
