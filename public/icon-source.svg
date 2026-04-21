@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D0D22"/>
+      <stop offset="100%" style="stop-color:#07070F"/>
+    </linearGradient>
+    <radialGradient id="innerGlow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#1B2F6A;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#07070F;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB"/>
+      <stop offset="100%" style="stop-color:#1A4AD0"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#93C5FD"/>
+      <stop offset="100%" style="stop-color:#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#059669"/>
+      <stop offset="100%" style="stop-color:#34D399"/>
+    </linearGradient>
+    <linearGradient id="areaFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:0.02"/>
+    </linearGradient>
+    <linearGradient id="pegGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#93C5FD"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+    <clipPath id="calClip">
+      <rect x="68" y="178" width="376" height="260" rx="0"/>
+    </clipPath>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+    <filter id="glowGreen" x="-30%" y="-100%" width="160%" height="400%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badgeShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- App icon background -->
+  <rect width="512" height="512" rx="108" ry="108" fill="url(#bgGrad)"/>
+  <rect width="512" height="512" rx="108" ry="108" fill="url(#innerGlow)"/>
+
+  <!-- Calendar card -->
+  <g filter="url(#softShadow)">
+    <rect x="68" y="128" width="376" height="310" rx="30" ry="30" fill="#0F0F20"/>
+  </g>
+
+  <!-- Header -->
+  <rect x="68" y="128" width="376" height="100" rx="30" ry="30" fill="url(#headerGrad)"/>
+  <rect x="68" y="188" width="376" height="40" fill="#1A4AD0"/>
+
+  <!-- Calendar ring pegs -->
+  <rect x="168" y="102" width="18" height="54" rx="9" ry="9" fill="url(#pegGrad)"/>
+  <rect x="326" y="102" width="18" height="54" rx="9" ry="9" fill="url(#pegGrad)"/>
+
+  <!-- Month + year in header -->
+  <text x="256" y="181" text-anchor="middle"
+    fill="white" font-size="29" font-weight="700"
+    font-family="-apple-system, BlinkMacSystemFont, Inter, SF Pro, system-ui, sans-serif"
+    letter-spacing="2" opacity="0.97">АПРЕЛЬ 2026</text>
+
+  <!-- Weekday separator line -->
+  <line x1="90" y1="238" x2="422" y2="238" stroke="#1E3A6A" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Weekday labels (minimal) -->
+  <g fill="#4A7CC7" font-size="13" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif" text-anchor="middle">
+    <text x="109" y="256">Пн</text>
+    <text x="163" y="256">Вт</text>
+    <text x="217" y="256">Ср</text>
+    <text x="271" y="256">Чт</text>
+    <text x="325" y="256">Пт</text>
+    <text x="379" y="256">Сб</text>
+    <text x="403" y="256" fill="#2A5090">Вс</text>
+  </g>
+
+  <!-- Day cells - Row 1 -->
+  <g fill="#181830">
+    <rect x="86"  y="264" width="44" height="40" rx="8"/>
+    <rect x="140" y="264" width="44" height="40" rx="8"/>
+    <rect x="194" y="264" width="44" height="40" rx="8"/>
+    <rect x="248" y="264" width="44" height="40" rx="8"/>
+    <rect x="302" y="264" width="44" height="40" rx="8"/>
+    <rect x="356" y="264" width="44" height="40" rx="8"/>
+    <rect x="382" y="264" width="38" height="40" rx="8" fill="#14142A"/>
+  </g>
+  <!-- Day numbers row 1 -->
+  <g fill="#4A6A9A" font-size="14" font-weight="500" font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif" text-anchor="middle">
+    <text x="108" y="289">7</text>
+    <text x="162" y="289">8</text>
+    <text x="216" y="289">9</text>
+    <text x="270" y="289">10</text>
+    <text x="324" y="289">11</text>
+    <text x="378" y="289">12</text>
+    <text x="401" y="289" fill="#2A4070">13</text>
+  </g>
+
+  <!-- Day cells - Row 2 -->
+  <g fill="#181830">
+    <rect x="86"  y="314" width="44" height="40" rx="8"/>
+    <rect x="140" y="314" width="44" height="40" rx="8"/>
+    <rect x="194" y="314" width="44" height="40" rx="8"/>
+    <!-- Today cell highlighted -->
+    <rect x="248" y="314" width="44" height="40" rx="8" fill="#1E3875"/>
+    <rect x="302" y="314" width="44" height="40" rx="8"/>
+    <rect x="356" y="314" width="44" height="40" rx="8"/>
+    <rect x="382" y="314" width="38" height="40" rx="8" fill="#14142A"/>
+  </g>
+  <!-- Day numbers row 2 -->
+  <g fill="#4A6A9A" font-size="14" font-weight="500" font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif" text-anchor="middle">
+    <text x="108" y="339">14</text>
+    <text x="162" y="339">15</text>
+    <text x="216" y="339">16</text>
+    <text x="401" y="339" fill="#2A4070">20</text>
+  </g>
+  <!-- Today number -->
+  <text x="270" y="339" text-anchor="middle" fill="#93C5FD" font-size="15" font-weight="800"
+    font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif">18</text>
+  <text x="324" y="339" text-anchor="middle" fill="#4A6A9A" font-size="14" font-weight="500"
+    font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif">19</text>
+  <!-- Today dot indicator -->
+  <circle cx="270" cy="348" r="3" fill="#60A5FA"/>
+
+  <!-- Day cells - Row 3 (partially visible, chart overlays) -->
+  <g fill="#181830">
+    <rect x="86"  y="364" width="44" height="38" rx="8"/>
+    <rect x="140" y="364" width="44" height="38" rx="8"/>
+    <rect x="194" y="364" width="44" height="38" rx="8"/>
+    <rect x="248" y="364" width="44" height="38" rx="8"/>
+    <rect x="302" y="364" width="44" height="38" rx="8"/>
+    <rect x="356" y="364" width="44" height="38" rx="8"/>
+  </g>
+
+  <!-- Green area fill under trend line -->
+  <polygon
+    points="86,395  140,377  194,368  248,358  302,345  356,330  410,316  410,402  86,402"
+    fill="url(#areaFill)"
+    clip-path="url(#calClip)"
+  />
+
+  <!-- Ascending trend line -->
+  <polyline
+    points="86,395  140,377  194,368  248,358  302,345  356,330  410,316"
+    fill="none"
+    stroke="url(#greenGrad)"
+    stroke-width="5.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#glowGreen)"
+    clip-path="url(#calClip)"
+  />
+
+  <!-- Dots on trend line -->
+  <g clip-path="url(#calClip)">
+    <circle cx="140" cy="377" r="5" fill="#10B981" filter="url(#glowGreen)"/>
+    <circle cx="248" cy="358" r="5" fill="#10B981" filter="url(#glowGreen)"/>
+    <circle cx="356" cy="330" r="7" fill="#34D399" filter="url(#glowGreen)"/>
+    <circle cx="356" cy="330" r="3.5" fill="white"/>
+  </g>
+
+  <!-- ₽ Badge - bottom right -->
+  <circle cx="390" cy="405" r="46" fill="#0A0A1A" filter="url(#badgeShadow)"/>
+  <circle cx="390" cy="405" r="40" fill="#151528"/>
+  <circle cx="390" cy="405" r="33" fill="none" stroke="#2563EB" stroke-width="2" opacity="0.8"/>
+  <circle cx="390" cy="405" r="29" fill="none" stroke="#3B82F6" stroke-width="1" opacity="0.3"/>
+  <text x="390" y="416" text-anchor="middle"
+    fill="url(#blueGrad)"
+    font-size="32" font-weight="800"
+    font-family="-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif">₽</text>
+</svg>

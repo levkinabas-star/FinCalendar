@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  min-height: 100dvh;
+}
+
+body {
+  background-color: #07070F;
+  color: #F1F5F9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+  max-width: 480px;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+.glass {
+  background: rgba(14, 14, 28, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card-glow {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.08);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up { animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-slide-down { animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.active-scale:active { transform: scale(0.96); transition: transform 0.1s; }
+
+input, select, textarea {
+  background-color: #1E1E38;
+  color: #F1F5F9;
+  border: 1px solid #1E2A40;
+  border-radius: 12px;
+  outline: none;
+  font-size: 16px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+select option {
+  background: #0E0E1C;
+  color: #F1F5F9;
+}
+
+.page-enter { animation: fadeIn 0.2s ease-out; }
+
+.bottom-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px); }
+
+/* Custom toggle */
+.toggle-bg {
+  background: #1E1E38;
+  border-radius: 9999px;
+  transition: background 0.2s;
+}
+.toggle-bg.active { background: #3B82F6; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Focus styles for accessibility */
+.focus-ring:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Ensure minimum touch target */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}

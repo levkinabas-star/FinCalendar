@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dev-dist/
+
+# Android build artifacts
+*.apk
+*.aab
+android/app/build/
+android/local.properties
+
+# Vite cache
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.DS_Store
+.idea/
+*.iml

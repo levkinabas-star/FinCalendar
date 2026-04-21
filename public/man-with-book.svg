@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 310">
+  <defs>
+    <linearGradient id="cloakG" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="60%" stop-color="#112240"/>
+      <stop offset="100%" stop-color="#080f1c"/>
+    </linearGradient>
+    <linearGradient id="bookCoverG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c2d12"/>
+      <stop offset="100%" stop-color="#3b0d04"/>
+    </linearGradient>
+    <linearGradient id="leftPageG" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#e8dfc0"/>
+      <stop offset="100%" stop-color="#f5f0e0"/>
+    </linearGradient>
+    <linearGradient id="rightPageG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8dfc0"/>
+      <stop offset="100%" stop-color="#dfd4ae"/>
+    </linearGradient>
+    <radialGradient id="eyeGlowL" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fca5a5" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eyeGlowR" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fca5a5" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- ══════════════════════════════ -->
+  <!--       CLOAK / BODY            -->
+  <!-- ══════════════════════════════ -->
+
+  <!-- Main robe -->
+  <path d="M 96,96
+           C 84,108 67,132 58,172
+           C 50,210 52,258 59,292
+           L 153,292
+           C 160,260 162,212 154,172
+           C 145,130 130,106 119,96 Z"
+        fill="url(#cloakG)"/>
+
+  <!-- Left inner shadow -->
+  <path d="M 96,96
+           C 85,110 75,138 69,178
+           C 63,214 65,260 70,290
+           L 84,290
+           C 79,260 77,214 83,177
+           C 89,138 99,113 107,99 Z"
+        fill="#060d18" opacity="0.55"/>
+
+  <!-- Right highlight -->
+  <path d="M 119,96
+           C 131,108 143,132 148,170
+           C 154,206 151,257 146,290
+           L 133,290
+           C 138,257 141,206 135,172
+           C 129,134 120,110 112,98 Z"
+        fill="#2a4e7a" opacity="0.3"/>
+
+  <!-- Center front drape crease -->
+  <path d="M 108,100 C 108,160 105,230 106,290"
+        stroke="#1a3356" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Hem / bottom fold -->
+  <path d="M 62,270 Q 107,285 135,284 Q 154,281 161,270"
+        stroke="#2a4e7a" stroke-width="1.2" fill="none" opacity="0.6"/>
+
+  <!-- ══════════════════════════════ -->
+  <!--           HOOD / HEAD         -->
+  <!-- ══════════════════════════════ -->
+
+  <!-- Hood pointed top -->
+  <path d="M 93,90 Q 97,48 112,29 Q 121,14 131,12 Q 141,14 151,29 Q 165,48 168,90 Z"
+        fill="#080f1c"/>
+
+  <!-- Hood base -->
+  <ellipse cx="130" cy="90" rx="40" ry="27" fill="#080f1c"/>
+
+  <!-- Hood inner edge highlight -->
+  <path d="M 93,85 Q 97,52 112,34 Q 121,19 131,17 Q 141,19 151,34 Q 165,52 168,85"
+        stroke="#1e3a5f" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Face darkness -->
+  <ellipse cx="130" cy="95" rx="27" ry="21" fill="#06090f"/>
+
+  <!-- Left eye -->
+  <ellipse cx="120" cy="91" rx="6" ry="4" fill="url(#eyeGlowL)"/>
+  <ellipse cx="120" cy="91" rx="3.5" ry="2.5" fill="#7f1d1d" opacity="0.9"/>
+  <ellipse cx="121.5" cy="90" rx="1.5" ry="1" fill="#fca5a5" opacity="0.55"/>
+
+  <!-- Right eye -->
+  <ellipse cx="140" cy="91" rx="6" ry="4" fill="url(#eyeGlowR)"/>
+  <ellipse cx="140" cy="91" rx="3.5" ry="2.5" fill="#7f1d1d" opacity="0.9"/>
+  <ellipse cx="141.5" cy="90" rx="1.5" ry="1" fill="#fca5a5" opacity="0.55"/>
+
+  <!-- ══════════════════════════════ -->
+  <!--            ARMS               -->
+  <!-- ══════════════════════════════ -->
+
+  <!-- Left sleeve -->
+  <path d="M 91,134
+           C 80,145 60,166 46,182
+           C 40,190 42,199 50,200
+           C 58,202 67,194 78,183
+           C 91,170 102,151 108,138 Z"
+        fill="#112240" stroke="#1e3a5f" stroke-width="0.6"/>
+
+  <!-- Left hand -->
+  <ellipse cx="50" cy="198" rx="9" ry="6" fill="#1a120a" transform="rotate(-15,50,198)"/>
+
+  <!-- Right sleeve -->
+  <path d="M 154,132
+           C 165,145 175,166 178,183
+           C 180,193 175,200 167,198
+           C 160,196 158,185 154,172
+           C 148,156 141,138 137,128 Z"
+        fill="#112240" stroke="#1e3a5f" stroke-width="0.6"/>
+
+  <!-- Right hand -->
+  <ellipse cx="170" cy="196" rx="9" ry="6" fill="#1a120a" transform="rotate(15,170,196)"/>
+
+  <!-- ══════════════════════════════ -->
+  <!--             BOOK              -->
+  <!-- ══════════════════════════════ -->
+
+  <!-- Book cover shadow/base -->
+  <rect x="43" y="187" width="122" height="60" rx="3" fill="url(#bookCoverG)" filter="url(#softShadow)"/>
+
+  <!-- Left page -->
+  <rect x="45" y="189" width="58" height="56" rx="1" fill="url(#leftPageG)"/>
+
+  <!-- Right page -->
+  <rect x="105" y="189" width="58" height="56" rx="1" fill="url(#rightPageG)"/>
+
+  <!-- Spine -->
+  <rect x="101" y="187" width="8" height="60" fill="#92400e"/>
+  <rect x="102" y="187" width="2.5" height="60" fill="#c2621a" opacity="0.5"/>
+
+  <!-- Page shadow at spine -->
+  <rect x="99" y="189" width="6" height="56" fill="#0c0c0c" opacity="0.12"/>
+
+  <!-- Ruled lines — left page -->
+  <line x1="51" y1="200" x2="99" y2="200" stroke="#b8a878" stroke-width="0.7" opacity="0.65"/>
+  <line x1="51" y1="208" x2="99" y2="208" stroke="#b8a878" stroke-width="0.7" opacity="0.6"/>
+  <line x1="51" y1="216" x2="99" y2="216" stroke="#b8a878" stroke-width="0.7" opacity="0.55"/>
+  <line x1="51" y1="224" x2="99" y2="224" stroke="#b8a878" stroke-width="0.7" opacity="0.5"/>
+  <line x1="51" y1="232" x2="99" y2="232" stroke="#b8a878" stroke-width="0.7" opacity="0.45"/>
+
+  <!-- Balance number on right page -->
+  <text x="134" y="207"
+        text-anchor="middle"
+        font-family="'Courier New',Courier,monospace"
+        font-size="16" font-weight="900"
+        fill="#991b1b">-4 820</text>
+  <text x="134" y="221"
+        text-anchor="middle"
+        font-family="'Courier New',Courier,monospace"
+        font-size="9.5"
+        fill="#b91c1c" opacity="0.85">РУБ.</text>
+  <!-- Red underline -->
+  <line x1="110" y1="225" x2="158" y2="225" stroke="#991b1b" stroke-width="1.5" opacity="0.9"/>
+
+  <!-- Top page curl hint -->
+  <path d="M 100,189 Q 104,189 105,195"
+        stroke="#a09070" stroke-width="0.8" fill="none" opacity="0.5"/>
+
+  <!-- ══════════════════════════════ -->
+  <!--    SPEECH BUBBLE (on top)     -->
+  <!-- ══════════════════════════════ -->
+  <rect x="3" y="5" rx="9" ry="9" width="112" height="52"
+        fill="#0f1c2d" stroke="#ef4444" stroke-width="1.5" filter="url(#softShadow)"/>
+  <!-- Tail toward figure -->
+  <path d="M 86,54 L 106,72 L 78,58 Z"
+        fill="#0f1c2d" stroke="#ef4444" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Line 1 -->
+  <text x="59" y="27"
+        text-anchor="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-size="12.5" font-weight="700" letter-spacing="2.5"
+        fill="#fca5a5">МИЛОРД,</text>
+  <!-- Line 2 -->
+  <text x="59" y="46"
+        text-anchor="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-size="9" font-weight="600" letter-spacing="0.5"
+        fill="#f87171">КАЗНА ПУСТЕЕТ!</text>
+</svg>

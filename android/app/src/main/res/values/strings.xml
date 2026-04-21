@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FinCalendar</string>
+    <string name="title_activity_main">FinCalendar</string>
+    <string name="package_name">fincalendar.app</string>
+    <string name="custom_url_scheme">fincalendar.app</string>
+    <string name="widget_small_desc">Быстрое добавление операции</string>
+    <string name="widget_medium_desc">Расход, доход и календарь</string>
+    <string name="widget_calendar_desc">Календарь с навигацией</string>
+</resources>

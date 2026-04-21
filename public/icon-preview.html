@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Fincal Icon Preview</title>
+<style>
+  body { background: #1a1a2e; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: system-ui, sans-serif; flex-direction: column; gap: 32px; }
+  .label { color: #60A5FA; font-size: 14px; text-align: center; margin-top: 8px; }
+  .row { display: flex; align-items: flex-end; gap: 32px; }
+  .item { display: flex; flex-direction: column; align-items: center; }
+  img { border-radius: calc(var(--size) * 0.2); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="item">
+    <img src="icon-source.svg" width="256" height="256" style="--size:256px; border-radius:50px">
+    <div class="label">512px (RuStore)</div>
+  </div>
+  <div class="item">
+    <img src="icon-source.svg" width="128" height="128" style="--size:128px; border-radius:25px">
+    <div class="label">128px</div>
+  </div>
+  <div class="item">
+    <img src="icon-source.svg" width="72" height="72" style="--size:72px; border-radius:14px">
+    <div class="label">72px</div>
+  </div>
+  <div class="item">
+    <img src="icon-source.svg" width="48" height="48" style="--size:48px; border-radius:9px">
+    <div class="label">48px</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_calendar_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg"
+    android:padding="8dp">
+
+    <!-- Header: app name + month navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- App name -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💰"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Финансы"
+                android:textColor="#64748B"
+                android:textSize="9sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <!-- Prev month button -->
+        <TextView
+            android:id="@+id/widget_cal_prev"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:text="‹"
+            android:textColor="#E2E8F0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/widget_btn_blue" />
+
+        <!-- Month + Year label -->
+        <TextView
+            android:id="@+id/widget_cal_month"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Апрель 2026"
+            android:textColor="#E2E8F0"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center" />
+
+        <!-- Next month button -->
+        <TextView
+            android:id="@+id/widget_cal_next"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:text="›"
+            android:textColor="#E2E8F0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/widget_btn_blue" />
+
+        <!-- Refresh button -->
+        <TextView
+            android:id="@+id/widget_cal_refresh"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:text="⟳"
+            android:textColor="#94A3B8"
+            android:textSize="13sp"
+            android:background="@android:color/transparent" />
+    </LinearLayout>
+
+    <!-- Weekday headers -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Пн" android:textColor="#475569" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Вт" android:textColor="#475569" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Ср" android:textColor="#475569" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Чт" android:textColor="#475569" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Пт" android:textColor="#475569" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Сб" android:textColor="#3B82F6" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Вс" android:textColor="#3B82F6" android:textSize="8sp" android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <!-- Calendar grid -->
+    <GridView
+        android:id="@+id/widget_calendar_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="7"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" />
+
+</LinearLayout>
