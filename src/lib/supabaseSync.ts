@@ -29,11 +29,12 @@ export async function loadFromSupabase(): Promise<SyncData | null> {
 }
 
 export async function saveToSupabase(snapshot: SyncData): Promise<void> {
-  await supabase.from('user_data').upsert({
+  const { error } = await supabase.from('user_data').upsert({
     id: ROW_ID,
     data: snapshot,
     updated_at: new Date().toISOString(),
   });
+  if (error) console.error('Supabase save error:', error.message);
 }
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;

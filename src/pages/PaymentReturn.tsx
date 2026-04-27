@@ -30,6 +30,7 @@ export default function PaymentReturn() {
     const poll = async () => {
       try {
         const res = await fetch(`${API_URL}/api/payments/${paymentId}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
         if (data.status === 'succeeded') {

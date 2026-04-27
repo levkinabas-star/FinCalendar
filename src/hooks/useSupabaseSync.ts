@@ -7,18 +7,20 @@ export function useSupabaseSync() {
 
   // Load from Supabase on mount
   useEffect(() => {
-    loadFromSupabase().then((remote) => {
-      if (!remote) return;
-      importData({
-        accounts: (remote.accounts as never) ?? [],
-        transactions: (remote.transactions as never) ?? [],
-        plannedExpenses: (remote.plannedExpenses as never) ?? [],
-        categories: (remote.categories as never) ?? [],
-        budgets: (remote.budgets as never) ?? [],
-        debts: (remote.debts as never) ?? [],
-      });
-    });
-  }, []);
+    loadFromSupabase()
+      .then((remote) => {
+        if (!remote) return;
+        importData({
+          accounts: (remote.accounts as never) ?? [],
+          transactions: (remote.transactions as never) ?? [],
+          plannedExpenses: (remote.plannedExpenses as never) ?? [],
+          categories: (remote.categories as never) ?? [],
+          budgets: (remote.budgets as never) ?? [],
+          debts: (remote.debts as never) ?? [],
+        });
+      })
+      .catch((err) => console.error('Supabase load error:', err));
+  }, [importData]);
 
   // Save to Supabase on any store change
   useEffect(() => {
