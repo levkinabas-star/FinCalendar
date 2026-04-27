@@ -57,13 +57,20 @@ export default defineConfig({
     },
   },
   build: {
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-charts': ['recharts'],
-          'vendor-dates': ['date-fns'],
-          'vendor-icons': ['lucide-react'],
+        manualChunks(id) {
+          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3') || id.includes('node_modules/victory')) {
+            return 'vendor-charts';
+          }
+          if (id.includes('node_modules/react-dom')) return 'vendor-react-dom';
+          if (id.includes('node_modules/react-router')) return 'vendor-router';
+          if (id.includes('node_modules/react')) return 'vendor-react';
+          if (id.includes('node_modules/date-fns')) return 'vendor-dates';
+          if (id.includes('node_modules/lucide')) return 'vendor-icons';
+          if (id.includes('node_modules/@supabase')) return 'vendor-supabase';
+          if (id.includes('node_modules')) return 'vendor-misc';
         },
       },
     },
