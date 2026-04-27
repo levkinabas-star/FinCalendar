@@ -23,6 +23,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (min-width: 768px) {
+  body {
+    max-width: none;
+    margin: 0;
+  }
+}
+
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; }
 
@@ -60,6 +67,12 @@ input[type="number"] { -moz-appearance: textfield; }
 .animate-slide-down { animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
 .active-scale:active { transform: scale(0.96); transition: transform 0.1s; }
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
 input, select, textarea {
   background-color: #1E1E38;

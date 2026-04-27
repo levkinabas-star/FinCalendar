@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense, useMemo, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import BottomNav from './components/BottomNav';
+import DesktopSidebar from './components/DesktopSidebar';
 import Modal from './components/Modal';
 import TransactionForm from './components/TransactionForm';
 import TransferForm from './components/TransferForm';
@@ -10,6 +11,7 @@ import Onboarding from './components/Onboarding';
 import ToastContainer from './components/Toast';
 import { useSmartNotifications } from './hooks/useSmartNotifications';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
+import { useIsDesktop } from './hooks/useIsDesktop';
 import { useStore } from './store';
 import { translations } from './translations';
 import { WidgetData } from './widgetPlugin';
@@ -46,6 +48,7 @@ export default function App() {
   const defaultCurrency = useStore((s) => s.defaultCurrency);
   const plannedExpenses = useStore((s) => s.plannedExpenses);
   const debts = useStore((s) => s.debts);
+  const isDesktop = useIsDesktop();
 
   // Sync balance + all event dates to Android widget SharedPreferences (debounced 1s)
   useEffect(() => {
@@ -57,7 +60,6 @@ export default function App() {
         };
         const txDates = [...new Set(transactions.map((t) => t.date))].join(',');
 
-        // Compute planned expense dates for ±6 months
         const pendingSet = new Set<string>();
         const completedSet = new Set<string>();
         const debtSet = new Set<string>();
@@ -117,51 +119,66 @@ export default function App() {
     return <Onboarding />;
   }
 
-  return (
-    <BrowserRouter>
-      <AddTransactionContext.Provider value={{ openAdd }}>
-      <WidgetActionHandler openAdd={openAdd} />
-      <div className="min-h-screen" style={{ background: '#07070F' }}>
-        <InstallPrompt />
-        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
-        <Suspense fallback={<div style={{ height: '100vh', background: '#07070F' }} />}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/widgets" element={<Widgets />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/legal" element={<UserAgreement />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/payment-return" element={<PaymentReturn />} />
-            <Route path="/seed" element={<Seed />} />
-            <Route path="/screenshot-frame" element={<ScreenshotFrame />} />
-          </Routes>
-        </Suspense>
+  const routes = (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/accounts" element={<Accounts />} />
+      <Route path="/calendar" element={<Calendar />} />
+      <Route path="/statistics" element={<Statistics />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/widgets" element={<Widgets />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/legal" element={<UserAgreement />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/payment-return" element={<PaymentReturn />} />
+      <Route path="/seed" element={<Seed />} />
+      <Route path="/screenshot-frame" element={<ScreenshotFrame />} />
+    </Routes>
+  );
 
-        <BottomNav onAddTransaction={() => openAdd('expense')} />
+  const modalContent = (
+    <Modal
+      isOpen={showAdd}
+      onClose={() => setShowAdd(false)}
+      title=" "
+      fullHeight
+    >
+      {/* Entity type selector */}
+      <div className="px-5 -mt-2 mb-3">
+        <div className="flex rounded-2xl p-1 gap-1" style={{ background: '#0A0A1C' }}>
+          {ENTITY_TABS.map((tab) => (
+            <button
+              key={tab.type}
+              onClick={() => setEntityType(tab.type)}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all active-scale"
+              style={{
+                background: entityType === tab.type
+                  ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)'
+                  : 'transparent',
+                color: entityType === tab.type ? 'white' : '#64748B',
+              }}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <Modal
-          isOpen={showAdd}
-          onClose={() => setShowAdd(false)}
-          title=" "
-          fullHeight
-        >
-          {/* Entity type selector — top row */}
-          <div className="px-5 -mt-2 mb-3">
-            <div className="flex rounded-2xl p-1 gap-1" style={{ background: '#0A0A1C' }}>
-              {ENTITY_TABS.map((tab) => (
+      {entityType === 'debt' ? (
+        <DebtForm onClose={() => setShowAdd(false)} />
+      ) : (
+        <>
+          <div className="px-5 mb-4">
+            <div className="flex rounded-2xl p-1 gap-1" style={{ background: '#131325' }}>
+              {TABS.map((tab) => (
                 <button
-                  key={tab.type}
-                  onClick={() => setEntityType(tab.type)}
+                  key={tab.mode}
+                  onClick={() => setAddMode(tab.mode)}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all active-scale"
                   style={{
-                    background: entityType === tab.type
-                      ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)'
-                      : 'transparent',
-                    color: entityType === tab.type ? 'white' : '#64748B',
+                    background: addMode === tab.mode ? tab.color : 'transparent',
+                    color: addMode === tab.mode ? 'white' : '#64748B',
                   }}
                 >
                   {tab.icon}
@@ -171,43 +188,70 @@ export default function App() {
             </div>
           </div>
 
-          {entityType === 'debt' ? (
-            <DebtForm onClose={() => setShowAdd(false)} />
+          {addMode === 'transfer' ? (
+            <TransferForm onClose={() => setShowAdd(false)} />
           ) : (
-            <>
-              <div className="px-5 mb-4">
-                <div className="flex rounded-2xl p-1 gap-1" style={{ background: '#131325' }}>
-                  {TABS.map((tab) => (
-                    <button
-                      key={tab.mode}
-                      onClick={() => setAddMode(tab.mode)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all active-scale"
-                      style={{
-                        background: addMode === tab.mode ? tab.color : 'transparent',
-                        color: addMode === tab.mode ? 'white' : '#64748B',
-                      }}
-                    >
-                      {tab.icon}
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {addMode === 'transfer' ? (
-                <TransferForm onClose={() => setShowAdd(false)} />
-              ) : (
-                <TransactionForm
-                  key={addMode + (initialDate ?? '')}
-                  initialType={addMode as 'income' | 'expense'}
-                  initialDate={initialDate}
-                  onClose={() => setShowAdd(false)}
-                />
-              )}
-            </>
+            <TransactionForm
+              key={addMode + (initialDate ?? '')}
+              initialType={addMode as 'income' | 'expense'}
+              initialDate={initialDate}
+              onClose={() => setShowAdd(false)}
+            />
           )}
-        </Modal>
-      </div>
+        </>
+      )}
+    </Modal>
+  );
+
+  return (
+    <BrowserRouter>
+      <AddTransactionContext.Provider value={{ openAdd }}>
+        <WidgetActionHandler openAdd={openAdd} />
+        <InstallPrompt />
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
+        {isDesktop ? (
+          /* ── Desktop Layout ── */
+          <div
+            style={{
+              display: 'flex',
+              minHeight: '100vh',
+              background: '#07070F',
+            }}
+          >
+            <DesktopSidebar onAddTransaction={() => openAdd('expense')} />
+            <main
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                maxHeight: '100vh',
+                background: '#07070F',
+              }}
+            >
+              <div
+                style={{
+                  maxWidth: 720,
+                  margin: '0 auto',
+                  padding: '0 8px',
+                }}
+              >
+                <Suspense fallback={<div style={{ height: '100vh', background: '#07070F' }} />}>
+                  {routes}
+                </Suspense>
+              </div>
+            </main>
+          </div>
+        ) : (
+          /* ── Mobile Layout ── */
+          <div className="min-h-screen" style={{ background: '#07070F' }}>
+            <Suspense fallback={<div style={{ height: '100vh', background: '#07070F' }} />}>
+              {routes}
+            </Suspense>
+            <BottomNav onAddTransaction={() => openAdd('expense')} />
+          </div>
+        )}
+
+        {modalContent}
       </AddTransactionContext.Provider>
     </BrowserRouter>
   );
@@ -223,17 +267,14 @@ function WidgetActionHandler({ openAdd }: { openAdd: (mode: 'expense' | 'income'
       else if (action === 'openCalendar') navigate('/calendar');
     };
 
-    // Cold start: app was not running → read SharedPreferences on mount
     WidgetData.getPendingAction().then(({ action }) => { if (action) handle(action); }).catch(() => {});
 
-    // Warm start: Java dispatches window event in onNewIntent (app was already running)
     const onWidgetAction = (e: Event) => {
       const action = (e as CustomEvent<{ action: string }>).detail?.action;
       if (action) handle(action);
     };
     window.addEventListener('widgetAction', onWidgetAction);
 
-    // Fallback: visibilitychange for cases where onNewIntent is not reliable
     const onVisible = () => {
       if (document.visibilityState === 'visible') {
         WidgetData.getPendingAction().then(({ action }) => { if (action) handle(action); }).catch(() => {});
