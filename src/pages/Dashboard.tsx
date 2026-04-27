@@ -1286,29 +1286,31 @@ function UpcomingRow({
               {language === 'ru' ? `через ${daysUntil} дн.` : `in ${daysUntil}d`}
             </p>
           )}
-          {onPayDebtScheduled && !payment.completedDates?.includes(date) && (
-            <button
-              onClick={() => {
-                const accId = payment.sourceAccountId || accounts?.[0]?.id;
-                if (accId) onPayDebtScheduled(debt.id, payment.id, accId);
-              }}
-              className="w-11 h-11 rounded-lg flex items-center justify-center mt-1 active-scale"
-              style={{ background: '#3B82F620' }}
-              title={language === 'ru' ? 'Выполнить' : 'Done'}
-            >
-              <Check size={12} color="#60A5FA" />
-            </button>
-          )}
-          {onToggleDebtScheduled && (
-            <button
-              onClick={() => onToggleDebtScheduled(debt.id, payment.id, date)}
-              className="w-11 h-11 rounded-lg flex items-center justify-center mt-1 active-scale"
-              style={{ background: '#1E1E38' }}
-              title={language === 'ru' ? 'Выполнено (без списания)' : 'Done (no deduction)'}
-            >
-              <Check size={12} color={payment.completedDates?.includes(date) ? '#A855F7' : '#475569'} />
-            </button>
-          )}
+          <div className="flex items-center gap-1 justify-end mt-1">
+            {onPayDebtScheduled && !payment.completedDates?.includes(date) && (
+              <button
+                onClick={() => {
+                  const accId = payment.sourceAccountId || accounts?.[0]?.id;
+                  if (accId) onPayDebtScheduled(debt.id, payment.id, accId);
+                }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center active-scale"
+                style={{ background: '#3B82F620' }}
+                title={language === 'ru' ? 'Выполнить' : 'Done'}
+              >
+                <Check size={12} color="#60A5FA" />
+              </button>
+            )}
+            {onToggleDebtScheduled && (
+              <button
+                onClick={() => onToggleDebtScheduled(debt.id, payment.id, date)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center active-scale"
+                style={{ background: '#1E1E38' }}
+                title={language === 'ru' ? 'Выполнено (без списания)' : 'Done (no deduction)'}
+              >
+                <Check size={12} color={payment.completedDates?.includes(date) ? '#A855F7' : '#475569'} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
