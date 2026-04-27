@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Globe, DollarSign, Tag, Trash2, ChevronRight, Plus, X, ArrowLeftRight, LayoutGrid, Crown, MessageCircle, FileText, Shield, Bell, BellOff } from 'lucide-react';
+import { Globe, DollarSign, Tag, Trash2, ChevronRight, Plus, X, ArrowLeftRight, LayoutGrid, Crown, MessageCircle, FileText, Shield, Bell, BellOff, Download, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store';
 import { translations } from '../translations';
@@ -22,6 +22,8 @@ export default function Settings() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showImportExport, setShowImportExport] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showDownload, setShowDownload] = useState(false);
+  const [downloadTab, setDownloadTab] = useState<'android' | 'iphone'>('android');
   const [newCatName, setNewCatName] = useState('');
   const [newCatNameEn, setNewCatNameEn] = useState('');
   const [newCatIcon, setNewCatIcon] = useState('🏷️');
@@ -286,6 +288,28 @@ export default function Settings() {
         </button>
       </Section>
 
+      {/* Download */}
+      <Section title={language === 'ru' ? 'Скачать приложение' : 'Download App'} icon={<Download size={16} />}>
+        <button
+          onClick={() => setShowDownload(true)}
+          className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl active-scale"
+          style={{ background: '#1E1E38', border: '1px solid #1E2A40' }}
+        >
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.15)' }}>
+            <Smartphone size={16} color="#10B981" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="text-sm font-medium text-slate-200">
+              {language === 'ru' ? 'Android APK / Инструкция для iOS' : 'Android APK / iOS Guide'}
+            </p>
+            <p className="text-xs text-slate-500">
+              {language === 'ru' ? 'Установить как нативное приложение' : 'Install as a native app'}
+            </p>
+          </div>
+          <ChevronRight size={16} className="text-slate-500" />
+        </button>
+      </Section>
+
       {/* Feedback */}
       <Section title={t.feedbackContact} icon={<MessageCircle size={16} />}>
         <button
@@ -476,6 +500,150 @@ export default function Settings() {
           >
             {t.add}
           </button>
+        </div>
+      </Modal>
+
+      {/* Download Modal */}
+      <Modal isOpen={showDownload} onClose={() => setShowDownload(false)} title={language === 'ru' ? 'Скачать приложение' : 'Download App'} fullHeight>
+        <div className="px-5 pb-8">
+          {/* Tabs */}
+          <div className="flex rounded-2xl p-1 gap-1 mb-5" style={{ background: '#131325' }}>
+            {(['android', 'iphone'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setDownloadTab(tab)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all active-scale flex items-center justify-center gap-2"
+                style={{
+                  background: downloadTab === tab ? '#3B82F6' : 'transparent',
+                  color: downloadTab === tab ? 'white' : '#64748B',
+                }}
+              >
+                {tab === 'android' ? '🤖' : '🍎'}
+                {tab === 'android' ? 'Android' : 'iPhone'}
+              </button>
+            ))}
+          </div>
+
+          {/* Android Tab */}
+          {downloadTab === 'android' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 px-4 py-4 rounded-2xl" style={{ background: '#0F1E0F', border: '1px solid #1A3A1A' }}>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(16,185,129,0.2)' }}>
+                  <span className="text-2xl">📦</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-100">FinCalendar v1.0</p>
+                  <p className="text-xs text-slate-400">{language === 'ru' ? 'Размер: 3.7 МБ • APK файл' : 'Size: 3.7 MB • APK file'}</p>
+                </div>
+              </div>
+
+              <a
+                href="/FinCalendar-release.apk"
+                download="FinCalendar-release.apk"
+                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-semibold text-white active-scale"
+                style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', display: 'flex' }}
+              >
+                <Download size={18} />
+                {language === 'ru' ? 'Скачать APK' : 'Download APK'}
+              </a>
+
+              <div className="rounded-2xl p-4 space-y-3" style={{ background: '#1E1E38', border: '1px solid #1E2A40' }}>
+                <p className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
+                  {language === 'ru' ? 'Как установить' : 'How to install'}
+                </p>
+                {[
+                  language === 'ru' ? '1. Скачайте APK файл' : '1. Download the APK file',
+                  language === 'ru' ? '2. Откройте файл — браузер или проводник попросит разрешение' : '2. Open the file — browser or file manager will ask for permission',
+                  language === 'ru' ? '3. Разрешите установку из неизвестных источников' : '3. Allow installation from unknown sources',
+                  language === 'ru' ? '4. Нажмите «Установить»' : '4. Tap «Install»',
+                ].map((step, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'rgba(16,185,129,0.2)' }}>
+                      <span className="text-xs font-bold" style={{ color: '#10B981' }}>{i + 1}</span>
+                    </div>
+                    <p className="text-xs text-slate-400">{step.replace(/^\d+\.\s/, '')}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-xs text-slate-600 text-center px-2">
+                {language === 'ru'
+                  ? 'APK протестирован на Android 8+. Требуется разрешение установки из сторонних источников.'
+                  : 'APK tested on Android 8+. Requires permission to install from unknown sources.'}
+              </p>
+            </div>
+          )}
+
+          {/* iPhone Tab */}
+          {downloadTab === 'iphone' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 px-4 py-4 rounded-2xl" style={{ background: '#0F1525', border: '1px solid #1A2540' }}>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(59,130,246,0.2)' }}>
+                  <span className="text-2xl">🌐</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-100">
+                    {language === 'ru' ? 'PWA — веб-приложение' : 'PWA — Web App'}
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    {language === 'ru' ? 'Работает как нативное приложение' : 'Works like a native app'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #1E2A40' }}>
+                {[
+                  {
+                    icon: '🧭',
+                    title: language === 'ru' ? 'Откройте в Safari' : 'Open in Safari',
+                    desc: language === 'ru' ? 'Приложение должно быть открыто именно в Safari, не Chrome или Firefox' : 'The app must be opened in Safari, not Chrome or Firefox',
+                  },
+                  {
+                    icon: '⬆️',
+                    title: language === 'ru' ? 'Нажмите кнопку «Поделиться»' : 'Tap the Share button',
+                    desc: language === 'ru' ? 'Кнопка в виде квадрата со стрелкой вверх — внизу экрана' : 'The square with an upward arrow button at the bottom of the screen',
+                  },
+                  {
+                    icon: '📲',
+                    title: language === 'ru' ? '«На экран «Домой»»' : '"Add to Home Screen"',
+                    desc: language === 'ru' ? 'Прокрутите вниз в меню и выберите этот пункт' : 'Scroll down in the share menu and select this option',
+                  },
+                  {
+                    icon: '✅',
+                    title: language === 'ru' ? 'Нажмите «Добавить»' : 'Tap «Add»',
+                    desc: language === 'ru' ? 'Иконка FinCalendar появится на экране «Домой»' : 'FinCalendar icon will appear on your Home Screen',
+                  },
+                ].map((step, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 px-4 py-4"
+                    style={{
+                      background: '#1E1E38',
+                      borderBottom: i < 3 ? '1px solid #1E2A40' : 'none',
+                    }}
+                  >
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xl" style={{ background: '#131325' }}>
+                      {step.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-200">{step.title}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{step.desc}</p>
+                    </div>
+                    <span className="text-xs font-bold text-slate-600 mt-1">{i + 1}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="px-4 py-3 rounded-2xl flex items-start gap-2" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                <span className="text-base flex-shrink-0">💡</span>
+                <p className="text-xs" style={{ color: '#93C5FD' }}>
+                  {language === 'ru'
+                    ? 'После добавления приложение работает без браузера, поддерживает офлайн-режим и выглядит как обычное приложение.'
+                    : 'After adding, the app works without a browser, supports offline mode, and looks like a regular app.'}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </Modal>
 
