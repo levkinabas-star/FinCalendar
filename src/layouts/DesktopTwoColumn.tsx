@@ -1,9 +1,9 @@
 import { useState, useMemo, lazy, Suspense } from 'react';
-import { format, parseISO, isToday, isYesterday } from 'date-fns';
+import { format, parseISO, isToday, isYesterday, differenceInDays } from 'date-fns';
 import {
   TrendingUp, TrendingDown, ArrowLeftRight, Pencil, Trash2, RotateCcw,
   ChevronRight, RefreshCw, Plus, Settings, Star, BarChart2,
-  CalendarDays, PiggyBank,
+  CalendarDays, PiggyBank, Crown, ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { useStore } from '../store';
 import { translations } from '../translations';
@@ -13,6 +13,9 @@ import TransactionForm from '../components/TransactionForm';
 import TransferForm from '../components/TransferForm';
 import EditDebtPaymentForm from '../components/EditDebtPaymentForm';
 import PlannedExpenseForm from '../components/PlannedExpenseForm';
+import AccountForm from '../components/AccountForm';
+import DebtForm from '../components/DebtForm';
+import DebtPaymentForm from '../components/DebtPaymentForm';
 import UpcomingRow from '../components/UpcomingRow';
 import { Transaction, Debt, DebtPayment, PlannedExpense } from '../types';
 import { useAddTransaction } from '../contexts/AddTransactionContext';
@@ -79,6 +82,17 @@ export default function DesktopTwoColumn() {
   const [revertingDebtPayment, setRevertingDebtPayment] = useState<{ debtId: string; paymentId: string } | null>(null);
   const [showAllTx, setShowAllTx] = useState(false);
 
+  // Account modals
+  const [showAddAccount, setShowAddAccount] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<any>(null);
+  const [deletingAccount, setDeletingAccount] = useState<any>(null);
+
+  // Debt modals
+  const [showAddDebt, setShowAddDebt] = useState(false);
+  const [payingDebt, setPayingDebt] = useState<Debt | null>(null);
+  const [editingDebt, setEditingDebt] = useState<Debt | null>(null);
+  const [deletingDebtId, setDeletingDebtId] = useState<string | null>(null);
+
   // ── Data computation ──
   const now = useMemo(() => new Date(), []);
   const { monthStart, monthEnd, monthStartStr, monthEndStr } = useMemo(() => {
@@ -133,6 +147,7 @@ export default function DesktopTwoColumn() {
   const activeDebts = useMemo(() => debts.filter((d) => d.status === 'active'), [debts]);
   const totalLent = useMemo(() => activeDebts.filter((d) => d.direction === 'lent').reduce((s, d) => s + (d.amount - d.paidAmount), 0), [activeDebts]);
   const totalBorrowed = useMemo(() => activeDebts.filter((d) => d.direction === 'borrowed').reduce((s, d) => s + (d.amount - d.paidAmount), 0), [activeDebts]);
+  const netDebt = totalBorrowed - totalLent;
 
   const catMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
   const accMap = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts]);
@@ -330,7 +345,7 @@ export default function DesktopTwoColumn() {
             {/* Accounts */}
             <SectionHeader
               title={t.accounts}
-              right={<button onClick={() => {}} className={linkBtnClass} style={linkBtnStyle}>{t.seeAll} <ChevronRight size={12} /></button>}
+              right={<button onClick={() => setShowAddAccount(true)} className={linkBtnClass} style={linkBtnStyle}><Plus size={12} /> {t.addAccount}</button>}
             />
             {accounts.length === 0 ? (
               <EmptyCard icon="💳" text={isRu ? 'Нет счетов' : 'No accounts'} />
@@ -339,6 +354,7 @@ export default function DesktopTwoColumn() {
                 {accounts.map((acc) => (
                   <div
                     key={acc.id}
+                    onClick={() => setEditingAccount(acc)}
                     className="dt-account-card active-scale"
                     style={{ padding: '14px 15px', borderRadius: 16, background: `linear-gradient(145deg, ${acc.color}18, ${acc.color}08)`, border: `1px solid ${acc.color}35`, cursor: 'pointer', boxShadow: `0 2px 16px ${acc.color}15`, backdropFilter: 'blur(10px)' }}
                   >
@@ -353,7 +369,7 @@ export default function DesktopTwoColumn() {
             )}
 
             {/* Debts */}
-            {activeDebts.length > 0 && (
+            {(activeDebts.length > 0 || debts.length > 0) && (
               <>
                 <SectionHeader
                   title={isRu ? 'Долги' : 'Debts'}
@@ -361,29 +377,63 @@ export default function DesktopTwoColumn() {
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                       {totalLent > 0 && <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: C.green, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 7, background: `${C.green}15` }}>▲ {formatAmount(totalLent, defaultCurrency as any)}</span>}
                       {totalBorrowed > 0 && <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: C.red, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 7, background: `${C.red}15` }}>▼ {formatAmount(totalBorrowed, defaultCurrency as any)}</span>}
+                      <button onClick={() => setShowAddDebt(true)} style={{ display: 'flex', alignItems: 'center', gap: 3, color: C.purple, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 7, background: `${C.purple}15`, cursor: 'pointer' }}><Plus size={11} /> {isRu ? 'Добавить' : 'Add'}</button>
                     </div>
                   }
                 />
-                <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.glassBorder}`, marginBottom: 22, backdropFilter: 'blur(12px)', background: C.glassCard, boxShadow: C.shadowCard }}>
-                  {activeDebts.slice(0, 5).map((debt, idx) => {
-                    const isLent = debt.direction === 'lent';
-                    const remaining = debt.amount - debt.paidAmount;
-                    return (
-                      <div key={debt.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: idx % 2 === 0 ? 'rgba(17,24,39,0.4)' : 'rgba(17,24,39,0.2)', borderBottom: idx < Math.min(activeDebts.length, 5) - 1 ? `1px solid ${C.glassBorder}` : 'none' }}>
-                        <div style={{ width: 36, height: 36, borderRadius: 11, background: isLent ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 17, boxShadow: `0 0 10px ${isLent ? C.glowGreen : C.glowRed}` }}>
-                          {isLent ? '💸' : '🤝'}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ color: C.text, fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{debt.personName}</p>
-                          <p style={{ color: C.muted, fontSize: 11 }}>{isRu ? (isLent ? 'Должен мне' : 'Я должен') : (isLent ? 'Owes me' : 'I owe')}</p>
-                        </div>
-                        <span style={{ color: isLent ? C.green : C.red, fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
-                          {isLent ? '+' : '-'}{formatAmount(remaining, debt.currency)}
-                        </span>
+
+                {/* Debt summary */}
+                {activeDebts.length > 0 && (
+                  <div style={{ borderRadius: 16, padding: '16px 18px', marginBottom: 14, background: 'linear-gradient(145deg, rgba(22,33,62,0.9), rgba(11,17,38,0.9))', border: `1px solid rgba(139,92,246,0.2)`, backdropFilter: 'blur(16px)', boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
+                    <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
+                      <div style={{ flex: 1, textAlign: 'center' }}>
+                        <p style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{isRu ? 'Должны мне' : 'Owe me'}</p>
+                        <p style={{ color: C.green, fontSize: 16, fontWeight: 800 }}>{formatAmount(totalLent, defaultCurrency as any)}</p>
                       </div>
-                    );
-                  })}
-                </div>
+                      <div style={{ width: 1, background: 'rgba(255,255,255,0.08)', margin: '0 4px' }} />
+                      <div style={{ flex: 1, textAlign: 'center' }}>
+                        <p style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{isRu ? 'Я должен' : 'I Owe'}</p>
+                        <p style={{ color: C.red, fontSize: 16, fontWeight: 800 }}>{formatAmount(totalBorrowed, defaultCurrency as any)}</p>
+                      </div>
+                    </div>
+                    {netDebt !== 0 && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                        <span style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{isRu ? 'Чистый долг' : 'Net Debt'}</span>
+                        <span style={{ color: netDebt > 0 ? C.red : C.green, fontSize: 13, fontWeight: 800 }}>{netDebt > 0 ? `-${formatAmount(netDebt, defaultCurrency as any)}` : `+${formatAmount(Math.abs(netDebt), defaultCurrency as any)}`}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Debt cards */}
+                {activeDebts.length === 0 ? (
+                  <button
+                    onClick={() => setShowAddDebt(true)}
+                    style={{ width: '100%', padding: '16px', borderRadius: 16, background: 'linear-gradient(145deg, rgba(139,92,246,0.1), rgba(139,92,246,0.03))', border: `1px dashed rgba(139,92,246,0.3)`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 22 }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🤝</div>
+                    <div style={{ textAlign: 'left' }}>
+                      <p style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{isRu ? 'Кто кому должен' : 'Track debts'}</p>
+                      <p style={{ color: C.muted, fontSize: 11 }}>{isRu ? 'Добавьте первый долг' : 'Add your first debt'}</p>
+                    </div>
+                    <Plus size={16} color={C.purple} style={{ marginLeft: 'auto' }} />
+                  </button>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 22 }}>
+                    {activeDebts.map((debt, idx) => (
+                      <DebtCardDesktop
+                        key={debt.id}
+                        debt={debt}
+                        isRu={isRu}
+                        onEdit={() => setEditingDebt(debt)}
+                        onDelete={() => setDeletingDebtId(debt.id)}
+                        onPay={() => setPayingDebt(debt)}
+                        accounts={accounts}
+                        defaultCurrency={defaultCurrency as any}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             )}
 
@@ -648,6 +698,48 @@ export default function DesktopTwoColumn() {
           </div>
         </div>
       </Modal>
+
+      {/* ═══════════ ACCOUNT MODALS ═══════════ */}
+      <Modal isOpen={showAddAccount} onClose={() => setShowAddAccount(false)} title={t.addAccount} fullHeight>
+        <AccountForm onClose={() => setShowAddAccount(false)} />
+      </Modal>
+
+      <Modal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} title={t.editAccount} fullHeight>
+        {editingAccount && <AccountForm account={editingAccount} onClose={() => setEditingAccount(null)} />}
+      </Modal>
+
+      <Modal isOpen={!!deletingAccount} onClose={() => setDeletingAccount(null)} title={t.areYouSure}>
+        <div className="px-5 pb-6">
+          <p className="text-slate-400 text-sm mb-5">{t.deleteAccountWarning}</p>
+          <div className="flex gap-3">
+            <button onClick={() => setDeletingAccount(null)} className="flex-1 py-3 rounded-2xl font-medium text-slate-300 active-scale" style={{ background: C.field, border: `1px solid ${C.border}` }}>{t.cancel}</button>
+            <button onClick={() => { if (deletingAccount) { useStore.getState().deleteAccount(deletingAccount.id); setDeletingAccount(null); } }} className="flex-1 py-3 rounded-2xl font-semibold text-white active-scale" style={{ background: 'linear-gradient(135deg,#EF4444,#DC2626)' }}>{t.delete}</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ═══════════ DEBT MODALS ═══════════ */}
+      <Modal isOpen={showAddDebt} onClose={() => setShowAddDebt(false)} title={t.addDebt} fullHeight>
+        <DebtForm onClose={() => setShowAddDebt(false)} />
+      </Modal>
+
+      <Modal isOpen={!!payingDebt} onClose={() => setPayingDebt(null)} title={t.addPayment} fullHeight>
+        {payingDebt && <DebtPaymentForm debt={payingDebt} onClose={() => setPayingDebt(null)} />}
+      </Modal>
+
+      <Modal isOpen={!!editingDebt} onClose={() => setEditingDebt(null)} title={t.editDebt} fullHeight>
+        {editingDebt && <DebtForm debt={editingDebt} onClose={() => setEditingDebt(null)} />}
+      </Modal>
+
+      <Modal isOpen={!!deletingDebtId} onClose={() => setDeletingDebtId(null)} title={t.areYouSure}>
+        <div className="px-5 pb-6">
+          <p className="text-slate-400 text-sm mb-5">{isRu ? t.deleteDebtWarning : 'This debt and all its payment history will be permanently deleted.'}</p>
+          <div className="flex gap-3">
+            <button onClick={() => setDeletingDebtId(null)} className="flex-1 py-3 rounded-2xl font-medium text-slate-300 active-scale" style={{ background: C.field, border: `1px solid ${C.border}` }}>{t.cancel}</button>
+            <button onClick={() => { if (deletingDebtId) { useStore.getState().deleteDebt(deletingDebtId); setDeletingDebtId(null); } }} className="flex-1 py-3 rounded-2xl font-semibold text-white active-scale" style={{ background: 'linear-gradient(135deg,#EF4444,#DC2626)' }}>{t.delete}</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -695,6 +787,116 @@ function EmptyCard({ icon, text }: { icon: string; text: string }) {
     <div style={{ padding: '18px', borderRadius: 16, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 22, boxShadow: C.shadowCard }}>
       <span style={{ fontSize: 20 }}>{icon}</span>
       <p style={{ color: C.muted, fontSize: 13 }}>{text}</p>
+    </div>
+  );
+}
+
+function DebtCardDesktop({ debt, isRu, onEdit, onDelete, onPay, accounts, defaultCurrency }: {
+  debt: Debt; isRu: boolean; onEdit: () => void; onDelete: () => void; onPay: () => void;
+  accounts: any[]; defaultCurrency: string;
+}) {
+  const { language } = useStore();
+  const [expanded, setExpanded] = useState(false);
+  const now = new Date();
+  const isLent = debt.direction === 'lent';
+  const isPaid = debt.status === 'paid';
+  const remaining = debt.amount - debt.paidAmount;
+  const pct = debt.amount > 0 ? Math.min((debt.paidAmount / debt.amount) * 100, 100) : 0;
+  const barColor = isPaid ? C.green : isLent ? C.green : C.red;
+  const isOverdue = !isPaid && !!debt.dueDate && differenceInDays(parseISO(debt.dueDate), now) < 0;
+  const hasInstallments = debt.scheduledPayments.length > 0;
+
+  const futureScheduled = debt.scheduledPayments.filter((sp: any) => parseISO(sp.dueDate) >= now).sort((a: any, b: any) => a.dueDate.localeCompare(b.dueDate));
+  const nextSp = futureScheduled[0];
+
+  return (
+    <div style={{ borderRadius: 16, overflow: 'hidden', background: 'rgba(11,15,28,0.85)', border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.3)' : 'rgba(139,92,246,0.2)'}`, backdropFilter: 'blur(12px)', boxShadow: '0 4px 20px rgba(0,0,0,0.35)' }}>
+      {/* Top color stripe */}
+      <div style={{ height: 3, background: `linear-gradient(90deg, ${barColor}, ${barColor}44)` }} />
+
+      <div style={{ padding: '14px 16px' }}>
+        {/* Row: icon + name + amount */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: hasInstallments ? 10 : 12 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 12, background: isLent ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 18, boxShadow: `0 0 10px ${isLent ? C.glowGreen : C.glowRed}` }}>
+            {isLent ? '💸' : '🤝'}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <p style={{ color: C.text, fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{debt.personName}</p>
+              {isOverdue && <span style={{ fontSize: 9, fontWeight: 700, color: C.red, background: 'rgba(239,68,68,0.15)', padding: '2px 6px', borderRadius: 5 }}>{isRu ? 'Просрочен' : 'Overdue'}</span>}
+              {isPaid && <span style={{ fontSize: 9, fontWeight: 700, color: C.green, background: 'rgba(16,185,129,0.15)', padding: '2px 6px', borderRadius: 5 }}>{isRu ? 'Погашен' : 'Paid'}</span>}
+            </div>
+            <p style={{ color: C.muted, fontSize: 11 }}>
+              {isLent ? (isRu ? 'Должен мне' : 'Owes me') : (isRu ? 'Я должен' : 'I owe')}
+              {debt.dueDate && ` · ${isRu ? 'до' : 'due'} ${format(parseISO(debt.dueDate), 'dd.MM.yyyy')}`}
+            </p>
+          </div>
+          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+            <p style={{ color: isLent ? C.green : C.red, fontSize: 14, fontWeight: 800 }}>{isLent ? '+' : '-'}{formatAmount(remaining, debt.currency)}</p>
+            <p style={{ color: C.muted, fontSize: 10 }}>{isRu ? 'из' : 'of'} {formatAmount(debt.amount, debt.currency)}</p>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ marginBottom: hasInstallments ? 10 : 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+            <span style={{ color: C.muted, fontSize: 10 }}>{isRu ? 'Оплачено' : 'Paid'}: {formatAmount(debt.paidAmount, debt.currency)}</span>
+            <span style={{ color: barColor, fontSize: 10, fontWeight: 700 }}>{Math.round(pct)}%</span>
+          </div>
+          <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})`, borderRadius: 3, transition: 'width 0.3s' }} />
+          </div>
+        </div>
+
+        {/* Installments toggle */}
+        {hasInstallments && (
+          <button onClick={() => setExpanded((v) => !v)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer', marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 14 }}>📅</span>
+              <div style={{ textAlign: 'left' }}>
+                <p style={{ color: C.text, fontSize: 11, fontWeight: 600 }}>{isRu ? 'Рассрочка' : 'Installments'}: {debt.scheduledPayments.length} {isRu ? 'платежей' : 'payments'}</p>
+                {nextSp && <p style={{ color: C.muted, fontSize: 10 }}>{isRu ? 'Следующий' : 'Next'}: {format(parseISO(nextSp.dueDate), 'dd.MM.yyyy')} · {formatAmount(nextSp.amount, debt.currency)}</p>}
+              </div>
+            </div>
+            {expanded ? <ChevronUp size={13} color={C.muted} /> : <ChevronDown size={13} color={C.muted} />}
+          </button>
+        )}
+
+        {/* Expanded installments list */}
+        {hasInstallments && expanded && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 }}>
+            {debt.scheduledPayments.slice().sort((a: any, b: any) => a.dueDate.localeCompare(b.dueDate)).map((sp: any) => {
+              const spDate = parseISO(sp.dueDate);
+              const isSpPast = spDate < now;
+              return (
+                <div key={sp.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px', borderRadius: 8, background: 'rgba(0,0,0,0.2)', opacity: isSpPast ? 0.5 : 1 }}>
+                  <span style={{ color: isSpPast ? C.dim : C.text, fontSize: 11 }}>{format(spDate, 'dd.MM.yy')}</span>
+                  <span style={{ flex: 1, color: isSpPast ? C.dim : C.text, fontSize: 11, fontWeight: 600 }}>{formatAmount(sp.amount, debt.currency)}</span>
+                  {isSpPast && <span style={{ fontSize: 9, color: C.green, fontWeight: 600 }}>{isRu ? '✓' : '✓'}</span>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Description */}
+        {debt.description && <p style={{ color: C.muted, fontSize: 11, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{debt.description}</p>}
+
+        {/* Action buttons */}
+        {!isPaid && (
+          <div style={{ display: 'flex', gap: 7 }}>
+            <button onClick={onPay} style={{ flex: 1, padding: '8px', borderRadius: 10, background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', color: '#60A5FA', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{isRu ? 'Выполнить' : 'Done'}</button>
+            <button onClick={onEdit} style={{ padding: '8px 10px', borderRadius: 10, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}><Pencil size={13} color={C.muted} /></button>
+            <button onClick={onDelete} style={{ padding: '8px 10px', borderRadius: 10, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer' }}><Trash2 size={13} color={C.red} /></button>
+          </div>
+        )}
+        {isPaid && (
+          <div style={{ display: 'flex', gap: 7 }}>
+            <button onClick={onEdit} style={{ padding: '8px 10px', borderRadius: 10, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}><Pencil size={13} color={C.muted} /></button>
+            <button onClick={onDelete} style={{ padding: '8px 10px', borderRadius: 10, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer' }}><Trash2 size={13} color={C.red} /></button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
