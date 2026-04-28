@@ -195,10 +195,19 @@ export default function DesktopTwoColumn() {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: C.bg, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: C.bg, overflow: 'hidden', position: 'relative' }}>
+
+      {/* Ambient background layer */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
+        <div className="dt-orb-1" style={{ position: 'absolute', top: '-18%', left: '-10%', width: 900, height: 900, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 65%)' }} />
+        <div className="dt-orb-2" style={{ position: 'absolute', bottom: '-20%', right: '-8%', width: 750, height: 750, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 65%)' }} />
+        <div className="dt-orb-3" style={{ position: 'absolute', top: '42%', right: '30%', width: 520, height: 520, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 65%)' }} />
+        {/* Subtle mesh grid */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.013) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.013) 1px, transparent 1px)', backgroundSize: '44px 44px' }} />
+      </div>
 
       {/* ══════════════ HEADER ══════════════ */}
-      <header style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${C.glassBorder}`, flexShrink: 0, gap: 12, backdropFilter: 'blur(12px)', background: 'rgba(7,7,15,0.8)' }}>
+      <header style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${C.glassBorder}`, flexShrink: 0, gap: 12, backdropFilter: 'blur(16px)', background: 'rgba(7,7,15,0.85)', position: 'relative', zIndex: 1 }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/icon-192.png" alt="FinCalendar" style={{ width: 36, height: 36, borderRadius: 12, flexShrink: 0, objectFit: 'cover' }} />
@@ -213,7 +222,7 @@ export default function DesktopTwoColumn() {
         <div style={{ flex: 1 }} />
 
         {/* Balance chip — frosted glass card */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '8px 16px', borderRadius: 14, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(16px)', boxShadow: C.shadowCard }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '8px 18px', borderRadius: 14, background: 'rgba(14,20,38,0.8)', border: `1px solid rgba(59,130,246,0.2)`, backdropFilter: 'blur(20px)', boxShadow: '0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset' }}>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.totalBalance}</p>
             <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 17, fontWeight: 800, lineHeight: 1.2 }}>
@@ -236,6 +245,7 @@ export default function DesktopTwoColumn() {
         {plan !== 'pro' && (
           <button
             onClick={() => setRightTab('budgets')}
+            className="dt-pro-btn"
             style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 10, background: 'rgba(245,158,11,0.12)', border: `1px solid rgba(245,158,11,0.3)`, color: C.amber, fontSize: 12, fontWeight: 700, cursor: 'pointer', boxShadow: '0 0 12px rgba(245,158,11,0.1)' }}
           >
             <Star size={13} fill={C.amber} color={C.amber} />
@@ -245,6 +255,7 @@ export default function DesktopTwoColumn() {
 
         <button
           onClick={() => setShowSettings(true)}
+          className="dt-settings-btn"
           style={{ width: 36, height: 36, borderRadius: 11, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: C.shadowCard }}
           title={t.settings}
         >
@@ -253,7 +264,7 @@ export default function DesktopTwoColumn() {
       </header>
 
       {/* ══════════════ TWO COLUMNS ══════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '42fr 58fr', flex: 1, overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '42fr 58fr', flex: 1, overflow: 'hidden', position: 'relative', zIndex: 1 }}>
 
         {/* ════ LEFT COLUMN ════ */}
         <div style={{ borderRight: `1px solid ${C.glassBorder}`, overflowY: 'auto', overflowX: 'hidden', background: 'linear-gradient(180deg, rgba(7,7,15,1) 0%, rgba(11,15,28,1) 100%)' }}>
@@ -288,10 +299,11 @@ export default function DesktopTwoColumn() {
             </div>
 
             {/* Balance card */}
-            <div style={{ borderRadius: 20, padding: '20px 22px', marginBottom: 22, background: 'linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.9))', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(20px)', position: 'relative', overflow: 'hidden', boxShadow: C.shadowElevated }}>
+            <div style={{ borderRadius: 20, padding: '22px 24px', marginBottom: 22, background: 'linear-gradient(145deg, rgba(22,33,62,0.95), rgba(11,17,38,0.95))', border: `1px solid rgba(59,130,246,0.22)`, backdropFilter: 'blur(24px)', position: 'relative', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset' }}>
               {/* Ambient glow blobs */}
-              <div style={{ position: 'absolute', right: -30, top: -30, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.25), transparent 70%)', pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', left: -20, bottom: -20, width: 80, height: 80, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: -50, top: -50, width: 240, height: 240, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.22), transparent 65%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', left: -30, bottom: -30, width: 180, height: 180, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.14), transparent 65%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', right: '35%', top: -20, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.1), transparent 65%)', pointerEvents: 'none' }} />
               {/* Top badge */}
               {netMonth < 0 && (
                 <div style={{ position: 'absolute', top: 14, right: 14, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 8, background: 'rgba(239,68,68,0.15)', border: `1px solid rgba(239,68,68,0.3)`, boxShadow: '0 0 12px rgba(239,68,68,0.15)' }}>
@@ -299,8 +311,8 @@ export default function DesktopTwoColumn() {
                   <span style={{ color: C.red, fontSize: 10, fontWeight: 700 }}>{isRu ? 'Расходы > доходов' : 'Expenses > income'}</span>
                 </div>
               )}
-              <p style={{ color: C.muted, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 6 }}>{t.totalBalance}</p>
-              <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 30, fontWeight: 800, lineHeight: 1.1, marginBottom: 16 }}>
+              <p style={{ color: '#6E8AA8', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>{t.totalBalance}</p>
+              <p className={totalBalance >= 0 ? 'text-grad-balance' : 'text-grad-red'} style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.1, marginBottom: 18 }}>
                 {formatAmount(totalBalance, defaultCurrency as any)}
               </p>
               <div style={{ display: 'flex', gap: 20 }}>
@@ -318,7 +330,7 @@ export default function DesktopTwoColumn() {
             {/* Accounts */}
             <SectionHeader
               title={t.accounts}
-              right={<button onClick={() => {}} style={linkBtnStyle}>{t.seeAll} <ChevronRight size={12} /></button>}
+              right={<button onClick={() => {}} className={linkBtnClass} style={linkBtnStyle}>{t.seeAll} <ChevronRight size={12} /></button>}
             />
             {accounts.length === 0 ? (
               <EmptyCard icon="💳" text={isRu ? 'Нет счетов' : 'No accounts'} />
@@ -327,8 +339,8 @@ export default function DesktopTwoColumn() {
                 {accounts.map((acc) => (
                   <div
                     key={acc.id}
-                    className="active-scale"
-                    style={{ padding: '14px 15px', borderRadius: 16, background: `linear-gradient(145deg, ${acc.color}14, ${acc.color}06)`, border: `1px solid ${acc.color}30`, cursor: 'pointer', boxShadow: `0 2px 12px ${acc.color}10`, backdropFilter: 'blur(8px)' }}
+                    className="dt-account-card active-scale"
+                    style={{ padding: '14px 15px', borderRadius: 16, background: `linear-gradient(145deg, ${acc.color}18, ${acc.color}08)`, border: `1px solid ${acc.color}35`, cursor: 'pointer', boxShadow: `0 2px 16px ${acc.color}15`, backdropFilter: 'blur(10px)' }}
                   >
                     <div style={{ fontSize: 22, marginBottom: 8 }}>{acc.icon}</div>
                     <p style={{ color: C.muted, fontSize: 11, marginBottom: 3 }}>{acc.name}</p>
@@ -415,7 +427,7 @@ export default function DesktopTwoColumn() {
             <SectionHeader
               title={t.recentTransactions}
               right={unifiedSorted.length > TX_LIMIT ? (
-                <button onClick={() => setShowAllTx((v) => !v)} style={linkBtnStyle}>
+                <button onClick={() => setShowAllTx((v) => !v)} className={linkBtnClass} style={linkBtnStyle}>
                   {showAllTx ? (isRu ? 'Свернуть' : 'Less') : `${isRu ? 'Все' : 'All'} (${unifiedSorted.length})`}
                 </button>
               ) : undefined}
@@ -521,7 +533,7 @@ export default function DesktopTwoColumn() {
                 <button
                   key={tab.id}
                   onClick={() => setRightTab(tab.id)}
-                  className="active-scale"
+                  className="dt-tab-btn active-scale"
                   style={{
                     display: 'flex', alignItems: 'center', gap: 8,
                     padding: '8px 16px', borderRadius: 12,
@@ -646,8 +658,8 @@ function ActionButton({ label, color, bg, border, icon, onClick }: { label: stri
   return (
     <button
       onClick={onClick}
-      className="active-scale"
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 8px', borderRadius: 10, background: bg, border: `1px solid ${border}`, color, fontSize: 13, fontWeight: 700, cursor: 'pointer', width: '100%' }}
+      className="dt-action-btn active-scale"
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px 8px', borderRadius: 12, background: bg, border: `1px solid ${border}`, color, fontSize: 13, fontWeight: 700, cursor: 'pointer', width: '100%', letterSpacing: '0.01em' }}
     >
       {icon}{label}
     </button>
@@ -657,7 +669,10 @@ function ActionButton({ label, color, bg, border, icon, onClick }: { label: stri
 function SectionHeader({ title, right }: { title: string; right?: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-      <p style={{ color: C.muted, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{title}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 3, height: 14, borderRadius: 2, background: `linear-gradient(180deg, ${C.blue} 0%, ${C.blue}45 100%)`, flexShrink: 0 }} />
+        <p style={{ color: '#6E8AA8', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>{title}</p>
+      </div>
       {right}
     </div>
   );
@@ -665,11 +680,11 @@ function SectionHeader({ title, right }: { title: string; right?: React.ReactNod
 
 function MiniStat({ label, value, color, icon }: { label: string; value: string; color: string; icon: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div style={{ width: 30, height: 30, borderRadius: 9, background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 10px ${color}30` }}>{icon}</div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ width: 34, height: 34, borderRadius: 10, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 18px ${color}35`, border: `1px solid ${color}28`, flexShrink: 0 }}>{icon}</div>
       <div>
-        <p style={{ color: C.muted, fontSize: 10, marginBottom: 1 }}>{label}</p>
-        <p style={{ color, fontSize: 13, fontWeight: 700 }}>{value}</p>
+        <p style={{ color: '#6E8AA8', fontSize: 10, marginBottom: 2, fontWeight: 500 }}>{label}</p>
+        <p style={{ color, fontSize: 14, fontWeight: 800 }}>{value}</p>
       </div>
     </div>
   );
@@ -689,11 +704,11 @@ function TxRow({ icon, iconBg, title, subtitle, amount, amountColor, amountSub, 
   amount: string; amountColor: string; amountSub?: string; borderBottom: string; actions: React.ReactNode[];
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'rgba(17,24,39,0.5)', borderBottom }}>
-      <div style={{ width: 36, height: 36, borderRadius: 11, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>{icon}</div>
+    <div className="dt-tx-row" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'rgba(15,20,35,0.5)', borderBottom }}>
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 10px rgba(0,0,0,0.25)' }}>{icon}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ color: C.text, fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</p>
-        <p style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{subtitle}</p>
+        <p style={{ color: '#5E7A95', fontSize: 11, marginTop: 2 }}>{subtitle}</p>
       </div>
       <div style={{ textAlign: 'right', flexShrink: 0, marginRight: 4 }}>
         <p style={{ color: amountColor, fontSize: 14, fontWeight: 700 }}>{amount}</p>
@@ -706,7 +721,7 @@ function TxRow({ icon, iconBg, title, subtitle, amount, amountColor, amountSub, 
 
 function Btn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} className="active-scale" style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(30,41,59,0.8)', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
+    <button onClick={onClick} className="dt-inline-btn active-scale" style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(22,32,52,0.85)', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
       {children}
     </button>
   );
@@ -716,8 +731,9 @@ const linkBtnStyle: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: 3,
   color: C.blue, fontSize: 11, fontWeight: 700,
   background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-  transition: 'all 0.15s',
 };
+
+const linkBtnClass = 'dt-link-btn';
 
 const labelStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
