@@ -1,7 +1,7 @@
 import { useState, lazy, Suspense, useMemo, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import BottomNav from './components/BottomNav';
-import DesktopSidebar from './components/DesktopSidebar';
+import DesktopTwoColumn from './layouts/DesktopTwoColumn';
 import Modal from './components/Modal';
 import TransactionForm from './components/TransactionForm';
 import TransferForm from './components/TransferForm';
@@ -212,35 +212,7 @@ export default function App() {
 
         {isDesktop ? (
           /* ── Desktop Layout ── */
-          <div
-            style={{
-              display: 'flex',
-              minHeight: '100vh',
-              background: '#07070F',
-            }}
-          >
-            <DesktopSidebar onAddTransaction={() => openAdd('expense')} />
-            <main
-              style={{
-                flex: 1,
-                overflowY: 'auto',
-                maxHeight: '100vh',
-                background: '#07070F',
-              }}
-            >
-              <div
-                style={{
-                  maxWidth: 720,
-                  margin: '0 auto',
-                  padding: '0 8px',
-                }}
-              >
-                <Suspense fallback={<div style={{ height: '100vh', background: '#07070F' }} />}>
-                  {routes}
-                </Suspense>
-              </div>
-            </main>
-          </div>
+          <DesktopTwoColumn />
         ) : (
           /* ── Mobile Layout ── */
           <div className="min-h-screen" style={{ background: '#07070F' }}>
