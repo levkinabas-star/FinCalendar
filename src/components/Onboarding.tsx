@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { ALL_CURRENCIES, CURRENCY_SYMBOLS, ACCOUNT_COLORS } from '../utils';
 import type { Currency } from '../types';
 import { importFromCSV } from '../utils/exportImport';
+import { useIsDesktop } from '../hooks/useIsDesktop';
 
 const STEPS = 3;
 
@@ -17,6 +18,7 @@ const ACCOUNT_PRESETS = [
 const TOP_CURRENCIES: Currency[] = ['RUB', 'USD', 'EUR', 'KZT', 'UAH', 'GBP', 'TRY', 'BYN'];
 
 export default function Onboarding() {
+  const isDesktop = useIsDesktop();
   const { language, setLanguage, setDefaultCurrency, defaultCurrency, addAccount, setOnboardingCompleted, addTransaction } = useStore();
   const isRu = language === 'ru';
 
@@ -77,9 +79,10 @@ export default function Onboarding() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: '#07070F' }}
+      className="fixed inset-0 z-50 overflow-y-auto"
+      style={{ background: '#07070F', display: 'flex', alignItems: isDesktop ? 'center' : 'flex-start', justifyContent: 'center' }}
     >
+      <div style={{ width: '100%', maxWidth: 480, paddingBottom: isDesktop ? 40 : 0, display: 'flex', flexDirection: 'column', minHeight: isDesktop ? 'auto' : '100%' }}>
       {/* Progress dots */}
       <div className="flex items-center justify-center gap-2 pt-12 pb-6">
         {Array.from({ length: STEPS }).map((_, i) => (
@@ -96,11 +99,11 @@ export default function Onboarding() {
       </div>
 
       {/* Step content */}
-      <div className="flex-1 overflow-y-auto px-5">
+      <div className="px-5" style={{ flex: isDesktop ? 'none' : 1, overflowY: isDesktop ? 'visible' : 'auto' }}>
 
         {/* Step 0: Language + Currency */}
         {step === 0 && (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col">
             <div className="mb-8 text-center">
               <div className="text-5xl mb-4">📅</div>
               <h1 className="text-2xl font-bold text-slate-100 mb-2">FinCalendar</h1>
@@ -291,7 +294,7 @@ export default function Onboarding() {
       </div>
 
       {/* Footer buttons */}
-      <div className="px-5 pb-8 pt-4 flex flex-col gap-3">
+      <div className="px-5 pt-4 flex flex-col gap-3" style={{ paddingBottom: isDesktop ? 16 : 32, marginTop: isDesktop ? 0 : 'auto' }}>
         {step === 0 && (
           <button
             onClick={handleCurrencyConfirm}
@@ -339,6 +342,7 @@ export default function Onboarding() {
             {isRu ? '← Назад' : '← Back'}
           </button>
         )}
+      </div>
       </div>
     </div>
   );
