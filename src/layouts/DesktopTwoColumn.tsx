@@ -26,18 +26,28 @@ type RightTab = 'calendar' | 'statistics' | 'budgets';
 
 const C = {
   bg: '#07070F',
-  card: '#0E0E1C',
-  surface: '#131325',
-  field: '#1E1E38',
-  border: '#1E2A40',
+  card: '#111827',
+  surface: '#1E293B',
+  field: '#1E293B',
+  border: '#1E3A5F',
   text: '#F1F5F9',
-  muted: '#64748B',
-  dim: '#475569',
+  muted: '#94A3B8',
+  dim: '#64748B',
   blue: '#3B82F6',
   green: '#10B981',
   red: '#EF4444',
   amber: '#F59E0B',
   purple: '#8B5CF6',
+  // Glass / Frosted tokens
+  glassCard: 'rgba(17,24,39,0.7)',
+  glassBorder: 'rgba(59,130,246,0.15)',
+  glassShine: 'rgba(255,255,255,0.05)',
+  glowBlue: 'rgba(59,130,246,0.25)',
+  glowGreen: 'rgba(16,185,129,0.2)',
+  glowRed: 'rgba(239,68,68,0.2)',
+  shadowCard: '0 4px 24px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3)',
+  shadowElevated: '0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4)',
+  shadowGlowBlue: '0 0 20px rgba(59,130,246,0.2)',
 };
 
 export default function DesktopTwoColumn() {
@@ -178,47 +188,49 @@ export default function DesktopTwoColumn() {
     return format(d, isRu ? 'd MMM yyyy' : 'MMM d, yyyy');
   };
 
-  const tabDefs: { id: RightTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'calendar', label: isRu ? 'Календарь' : 'Calendar', icon: <CalendarDays size={14} /> },
-    { id: 'statistics', label: isRu ? 'Статистика' : 'Statistics', icon: <BarChart2 size={14} /> },
-    { id: 'budgets', label: isRu ? 'Бюджеты' : 'Budgets', icon: <PiggyBank size={14} /> },
+  const tabDefs: { id: RightTab; label: string; icon: React.ReactNode; color: string; glow: string }[] = [
+    { id: 'calendar', label: isRu ? 'Календарь' : 'Calendar', icon: <CalendarDays size={14} />, color: C.blue, glow: C.glowBlue },
+    { id: 'statistics', label: isRu ? 'Статистика' : 'Statistics', icon: <BarChart2 size={14} />, color: C.purple, glow: 'rgba(139,92,246,0.25)' },
+    { id: 'budgets', label: isRu ? 'Бюджеты' : 'Budgets', icon: <PiggyBank size={14} />, color: C.green, glow: C.glowGreen },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: C.bg, overflow: 'hidden' }}>
 
       {/* ══════════════ HEADER ══════════════ */}
-      <header style={{ height: 52, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${C.border}`, flexShrink: 0, gap: 12 }}>
+      <header style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${C.glassBorder}`, flexShrink: 0, gap: 12, backdropFilter: 'blur(12px)', background: 'rgba(7,7,15,0.8)' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 9, background: 'linear-gradient(135deg,#3B82F6,#2563EB)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Wallet size={16} color="white" />
+          <div style={{ width: 36, height: 36, borderRadius: 12, background: 'linear-gradient(135deg,#3B82F6,#6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: C.shadowGlowBlue }}>
+            <Wallet size={18} color="white" />
           </div>
-          <span style={{ color: C.text, fontSize: 15, fontWeight: 700 }}>FinCalendar</span>
-          {plan === 'pro' && (
-            <span style={{ fontSize: 9, fontWeight: 700, color: C.amber, letterSpacing: '0.1em', background: 'rgba(245,158,11,0.12)', padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(245,158,11,0.25)' }}>PRO</span>
-          )}
+          <div>
+            <span style={{ color: C.text, fontSize: 16, fontWeight: 700 }}>FinCalendar</span>
+            {plan === 'pro' && (
+              <span style={{ marginLeft: 8, fontSize: 9, fontWeight: 800, color: C.amber, letterSpacing: '0.12em', background: 'rgba(245,158,11,0.15)', padding: '2px 7px', borderRadius: 6, border: '1px solid rgba(245,158,11,0.3)' }}>PRO</span>
+            )}
+          </div>
         </div>
 
         <div style={{ flex: 1 }} />
 
-        {/* Balance chip */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginRight: 8 }}>
+        {/* Balance chip — frosted glass card */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '8px 16px', borderRadius: 14, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(16px)', boxShadow: C.shadowCard }}>
           <div style={{ textAlign: 'right' }}>
-            <p style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{t.totalBalance}</p>
-            <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 15, fontWeight: 700, lineHeight: 1 }}>
+            <p style={{ color: C.muted, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.totalBalance}</p>
+            <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 17, fontWeight: 800, lineHeight: 1.2 }}>
               {formatAmount(totalBalance, defaultCurrency as any)}
             </p>
           </div>
-          <div style={{ width: 1, height: 28, background: C.border }} />
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ width: 1, height: 32, background: C.glassBorder }} />
+          <div style={{ display: 'flex', gap: 16 }}>
             <div style={{ textAlign: 'right' }}>
               <p style={{ color: C.muted, fontSize: 10 }}>{t.income}</p>
-              <p style={{ color: C.green, fontSize: 13, fontWeight: 600 }}>+{formatAmount(totalMonthIncome, defaultCurrency as any)}</p>
+              <p style={{ color: C.green, fontSize: 13, fontWeight: 700 }}>+{formatAmount(totalMonthIncome, defaultCurrency as any)}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
               <p style={{ color: C.muted, fontSize: 10 }}>{t.expenses}</p>
-              <p style={{ color: C.red, fontSize: 13, fontWeight: 600 }}>-{formatAmount(totalMonthExpense, defaultCurrency as any)}</p>
+              <p style={{ color: C.red, fontSize: 13, fontWeight: 700 }}>-{formatAmount(totalMonthExpense, defaultCurrency as any)}</p>
             </div>
           </div>
         </div>
@@ -226,19 +238,19 @@ export default function DesktopTwoColumn() {
         {plan !== 'pro' && (
           <button
             onClick={() => setRightTab('budgets')}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.22)', color: C.amber, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 10, background: 'rgba(245,158,11,0.12)', border: `1px solid rgba(245,158,11,0.3)`, color: C.amber, fontSize: 12, fontWeight: 700, cursor: 'pointer', boxShadow: '0 0 12px rgba(245,158,11,0.1)' }}
           >
-            <Star size={12} fill={C.amber} color={C.amber} />
+            <Star size={13} fill={C.amber} color={C.amber} />
             Pro
           </button>
         )}
 
         <button
           onClick={() => setShowSettings(true)}
-          style={{ width: 34, height: 34, borderRadius: 8, background: C.field, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+          style={{ width: 36, height: 36, borderRadius: 11, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: C.shadowCard }}
           title={t.settings}
         >
-          <Settings size={16} color={C.muted} />
+          <Settings size={17} color={C.muted} />
         </button>
       </header>
 
@@ -246,50 +258,54 @@ export default function DesktopTwoColumn() {
       <div style={{ display: 'grid', gridTemplateColumns: '42fr 58fr', flex: 1, overflow: 'hidden' }}>
 
         {/* ════ LEFT COLUMN ════ */}
-        <div style={{ borderRight: `1px solid ${C.border}`, overflowY: 'auto', overflowX: 'hidden' }}>
-          <div style={{ padding: '18px 20px 40px' }}>
+        <div style={{ borderRight: `1px solid ${C.glassBorder}`, overflowY: 'auto', overflowX: 'hidden', background: 'linear-gradient(180deg, rgba(7,7,15,1) 0%, rgba(11,15,28,1) 100%)' }}>
+          <div style={{ padding: '20px 22px 48px' }}>
 
             {/* Action buttons */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 22 }}>
               <ActionButton
                 label={isRu ? '+ Доход' : '+ Income'}
                 color={C.green}
-                bg="rgba(16,185,129,0.12)"
-                border="rgba(16,185,129,0.25)"
+                bg="linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))"
+                border="rgba(16,185,129,0.35)"
                 icon={<TrendingUp size={14} />}
                 onClick={() => openAdd('income')}
               />
               <ActionButton
-                label={isRu ? '↔ Перевод' : '↔ Transfer'}
+                label={isRu ? '↔ Перевод' : 'Transfer'}
                 color={C.blue}
-                bg="rgba(59,130,246,0.12)"
-                border="rgba(59,130,246,0.25)"
+                bg="linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))"
+                border="rgba(59,130,246,0.35)"
                 icon={<ArrowLeftRight size={14} />}
                 onClick={() => openAdd('transfer')}
               />
               <ActionButton
                 label={isRu ? '− Расход' : '− Expense'}
                 color={C.red}
-                bg="rgba(239,68,68,0.12)"
-                border="rgba(239,68,68,0.25)"
+                bg="linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))"
+                border="rgba(239,68,68,0.35)"
                 icon={<TrendingDown size={14} />}
                 onClick={() => openAdd('expense')}
               />
             </div>
 
             {/* Balance card */}
-            <div style={{ borderRadius: 16, padding: '16px 18px', marginBottom: 20, background: 'linear-gradient(135deg,#1A2744,#0E1929)', border: '1px solid #1E3A5F', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', right: -20, top: -20, width: 90, height: 90, borderRadius: '50%', background: 'radial-gradient(circle,#3B82F6,transparent)', opacity: 0.18 }} />
+            <div style={{ borderRadius: 20, padding: '20px 22px', marginBottom: 22, background: 'linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.9))', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(20px)', position: 'relative', overflow: 'hidden', boxShadow: C.shadowElevated }}>
+              {/* Ambient glow blobs */}
+              <div style={{ position: 'absolute', right: -30, top: -30, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.25), transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', left: -20, bottom: -20, width: 80, height: 80, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)', pointerEvents: 'none' }} />
+              {/* Top badge */}
               {netMonth < 0 && (
-                <p style={{ position: 'absolute', top: 14, right: 14, color: C.red, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-                  {isRu ? '⚠ Расходы > доходов' : '⚠ Expenses > income'}
-                </p>
+                <div style={{ position: 'absolute', top: 14, right: 14, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 8, background: 'rgba(239,68,68,0.15)', border: `1px solid rgba(239,68,68,0.3)`, boxShadow: '0 0 12px rgba(239,68,68,0.15)' }}>
+                  <TrendingDown size={11} color={C.red} />
+                  <span style={{ color: C.red, fontSize: 10, fontWeight: 700 }}>{isRu ? 'Расходы > доходов' : 'Expenses > income'}</span>
+                </div>
               )}
-              <p style={{ color: C.muted, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{t.totalBalance}</p>
-              <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 28, fontWeight: 700, lineHeight: 1.1, marginBottom: 12 }}>
+              <p style={{ color: C.muted, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 6 }}>{t.totalBalance}</p>
+              <p style={{ color: totalBalance >= 0 ? C.text : C.red, fontSize: 30, fontWeight: 800, lineHeight: 1.1, marginBottom: 16 }}>
                 {formatAmount(totalBalance, defaultCurrency as any)}
               </p>
-              <div style={{ display: 'flex', gap: 16 }}>
+              <div style={{ display: 'flex', gap: 20 }}>
                 <MiniStat label={t.income} value={`+${formatAmount(totalMonthIncome, defaultCurrency as any)}`} color={C.green} icon={<TrendingUp size={13} color={C.green} />} />
                 <MiniStat label={t.expenses} value={`-${formatAmount(totalMonthExpense, defaultCurrency as any)}`} color={C.red} icon={<TrendingDown size={13} color={C.red} />} />
                 <MiniStat
@@ -309,16 +325,16 @@ export default function DesktopTwoColumn() {
             {accounts.length === 0 ? (
               <EmptyCard icon="💳" text={isRu ? 'Нет счетов' : 'No accounts'} />
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px,1fr))', gap: 10, marginBottom: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px,1fr))', gap: 10, marginBottom: 22 }}>
                 {accounts.map((acc) => (
                   <div
                     key={acc.id}
                     className="active-scale"
-                    style={{ padding: '13px 14px', borderRadius: 12, background: `linear-gradient(135deg,${acc.color}18,${acc.color}08)`, border: `1px solid ${acc.color}28`, cursor: 'pointer' }}
+                    style={{ padding: '14px 15px', borderRadius: 16, background: `linear-gradient(145deg, ${acc.color}14, ${acc.color}06)`, border: `1px solid ${acc.color}30`, cursor: 'pointer', boxShadow: `0 2px 12px ${acc.color}10`, backdropFilter: 'blur(8px)' }}
                   >
-                    <div style={{ fontSize: 20, marginBottom: 6 }}>{acc.icon}</div>
-                    <p style={{ color: C.muted, fontSize: 11, marginBottom: 2 }}>{acc.name}</p>
-                    <p style={{ color: acc.balance >= 0 ? C.text : C.red, fontSize: 15, fontWeight: 700 }}>
+                    <div style={{ fontSize: 22, marginBottom: 8 }}>{acc.icon}</div>
+                    <p style={{ color: C.muted, fontSize: 11, marginBottom: 3 }}>{acc.name}</p>
+                    <p style={{ color: acc.balance >= 0 ? C.text : C.red, fontSize: 15, fontWeight: 800 }}>
                       {formatAmount(acc.balance, acc.currency)}
                     </p>
                   </div>
@@ -333,18 +349,18 @@ export default function DesktopTwoColumn() {
                   title={isRu ? 'Долги' : 'Debts'}
                   right={
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                      {totalLent > 0 && <span style={{ color: C.green, fontSize: 11, fontWeight: 600 }}>▲ {formatAmount(totalLent, defaultCurrency as any)}</span>}
-                      {totalBorrowed > 0 && <span style={{ color: C.red, fontSize: 11, fontWeight: 600 }}>▼ {formatAmount(totalBorrowed, defaultCurrency as any)}</span>}
+                      {totalLent > 0 && <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: C.green, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 7, background: `${C.green}15` }}>▲ {formatAmount(totalLent, defaultCurrency as any)}</span>}
+                      {totalBorrowed > 0 && <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: C.red, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 7, background: `${C.red}15` }}>▼ {formatAmount(totalBorrowed, defaultCurrency as any)}</span>}
                     </div>
                   }
                 />
-                <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${C.border}`, marginBottom: 20 }}>
+                <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.glassBorder}`, marginBottom: 22, backdropFilter: 'blur(12px)', background: C.glassCard, boxShadow: C.shadowCard }}>
                   {activeDebts.slice(0, 5).map((debt, idx) => {
                     const isLent = debt.direction === 'lent';
                     const remaining = debt.amount - debt.paidAmount;
                     return (
-                      <div key={debt.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: C.card, borderBottom: idx < activeDebts.length - 1 && idx < 4 ? `1px solid ${C.border}` : 'none' }}>
-                        <div style={{ width: 34, height: 34, borderRadius: 9, background: isLent ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 16 }}>
+                      <div key={debt.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: idx % 2 === 0 ? 'rgba(17,24,39,0.4)' : 'rgba(17,24,39,0.2)', borderBottom: idx < Math.min(activeDebts.length, 5) - 1 ? `1px solid ${C.glassBorder}` : 'none' }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 11, background: isLent ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 17, boxShadow: `0 0 10px ${isLent ? C.glowGreen : C.glowRed}` }}>
                           {isLent ? '💸' : '🤝'}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -369,7 +385,7 @@ export default function DesktopTwoColumn() {
             {upcoming.length === 0 ? (
               <EmptyCard icon="📅" text={isRu ? 'Нет предстоящих платежей' : 'No upcoming payments'} />
             ) : (
-              <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${C.border}`, marginBottom: 20 }}>
+              <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.glassBorder}`, marginBottom: 22, backdropFilter: 'blur(12px)', background: C.glassCard, boxShadow: C.shadowCard }}>
                 {upcoming.slice(0, 5).map((item, idx) => (
                   <UpcomingRow
                     key={item.kind === 'planned' ? `up-p-${item.expense.id}-${item.date}` : `up-d-${item.payment.id}`}
@@ -412,13 +428,13 @@ export default function DesktopTwoColumn() {
                 <p style={{ fontSize: 13 }}>{t.noTransactions}</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {grouped.map(([dateStr, items]) => (
                   <div key={dateStr}>
-                    <p style={{ color: C.dim, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6, paddingLeft: 2 }}>
+                    <p style={{ color: C.muted, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 8, paddingLeft: 4 }}>
                       {formatDateLabel(dateStr)}
                     </p>
-                    <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${C.border}` }}>
+                    <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(12px)', background: C.glassCard, boxShadow: C.shadowCard }}>
                       {items.map((item, idx) => {
                         const borderBottom = idx < items.length - 1 ? `1px solid ${C.border}` : 'none';
 
@@ -498,9 +514,9 @@ export default function DesktopTwoColumn() {
         </div>
 
         {/* ════ RIGHT COLUMN ════ */}
-        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'linear-gradient(180deg, rgba(7,7,15,1) 0%, rgba(11,15,28,1) 100%)' }}>
           {/* Tab bar */}
-          <div style={{ display: 'flex', gap: 4, padding: '10px 16px', borderBottom: `1px solid ${C.border}`, flexShrink: 0, background: C.bg }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, padding: '12px 18px', borderBottom: `1px solid ${C.glassBorder}`, flexShrink: 0, background: 'rgba(7,7,15,0.6)', backdropFilter: 'blur(16px)' }}>
             {tabDefs.map((tab) => {
               const active = rightTab === tab.id;
               return (
@@ -509,12 +525,15 @@ export default function DesktopTwoColumn() {
                   onClick={() => setRightTab(tab.id)}
                   className="active-scale"
                   style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '7px 14px', borderRadius: 8, border: `1px solid ${active ? `${C.blue}40` : 'transparent'}`,
-                    background: active ? `${C.blue}18` : 'transparent',
-                    color: active ? C.blue : C.muted,
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '8px 16px', borderRadius: 12,
+                    border: `1px solid ${active ? tab.color : tab.color + '35'}`,
+                    background: active ? `linear-gradient(135deg, ${tab.color}28, ${tab.color}10)` : `${tab.color}0D`,
+                    color: active ? tab.color : tab.color + '99',
                     fontSize: 13, fontWeight: active ? 700 : 500,
-                    cursor: 'pointer', transition: 'all 0.15s',
+                    cursor: 'pointer', transition: 'all 0.2s',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: active ? `0 0 16px ${tab.glow}` : 'none',
                   }}
                 >
                   {tab.icon}
@@ -639,8 +658,8 @@ function ActionButton({ label, color, bg, border, icon, onClick }: { label: stri
 
 function SectionHeader({ title, right }: { title: string; right?: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-      <p style={{ color: '#64748B', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{title}</p>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+      <p style={{ color: C.muted, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{title}</p>
       {right}
     </div>
   );
@@ -648,11 +667,11 @@ function SectionHeader({ title, right }: { title: string; right?: React.ReactNod
 
 function MiniStat({ label, value, color, icon }: { label: string; value: string; color: string; icon: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <div style={{ width: 28, height: 28, borderRadius: 7, background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ width: 30, height: 30, borderRadius: 9, background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 10px ${color}30` }}>{icon}</div>
       <div>
-        <p style={{ color: '#475569', fontSize: 10 }}>{label}</p>
-        <p style={{ color, fontSize: 12, fontWeight: 700 }}>{value}</p>
+        <p style={{ color: C.muted, fontSize: 10, marginBottom: 1 }}>{label}</p>
+        <p style={{ color, fontSize: 13, fontWeight: 700 }}>{value}</p>
       </div>
     </div>
   );
@@ -660,9 +679,9 @@ function MiniStat({ label, value, color, icon }: { label: string; value: string;
 
 function EmptyCard({ icon, text }: { icon: string; text: string }) {
   return (
-    <div style={{ padding: '16px', borderRadius: 12, background: '#0E0E1C', border: '1px solid #1E2A40', display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-      <span style={{ fontSize: 18 }}>{icon}</span>
-      <p style={{ color: '#64748B', fontSize: 13 }}>{text}</p>
+    <div style={{ padding: '18px', borderRadius: 16, background: C.glassCard, border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 22, boxShadow: C.shadowCard }}>
+      <span style={{ fontSize: 20 }}>{icon}</span>
+      <p style={{ color: C.muted, fontSize: 13 }}>{text}</p>
     </div>
   );
 }
@@ -672,38 +691,40 @@ function TxRow({ icon, iconBg, title, subtitle, amount, amountColor, amountSub, 
   amount: string; amountColor: string; amountSub?: string; borderBottom: string; actions: React.ReactNode[];
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#0E0E1C', borderBottom }}>
-      <div style={{ width: 34, height: 34, borderRadius: 9, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{icon}</div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'rgba(17,24,39,0.5)', borderBottom }}>
+      <div style={{ width: 36, height: 36, borderRadius: 11, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>{icon}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ color: '#F1F5F9', fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</p>
-        <p style={{ color: '#64748B', fontSize: 11 }}>{subtitle}</p>
+        <p style={{ color: C.text, fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</p>
+        <p style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{subtitle}</p>
       </div>
-      <div style={{ textAlign: 'right', flexShrink: 0, marginRight: 6 }}>
-        <p style={{ color: amountColor, fontSize: 13, fontWeight: 700 }}>{amount}</p>
-        {amountSub && <p style={{ color: '#64748B', fontSize: 10 }}>{amountSub}</p>}
+      <div style={{ textAlign: 'right', flexShrink: 0, marginRight: 4 }}>
+        <p style={{ color: amountColor, fontSize: 14, fontWeight: 700 }}>{amount}</p>
+        {amountSub && <p style={{ color: C.muted, fontSize: 10, marginTop: 1 }}>{amountSub}</p>}
       </div>
-      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>{actions}</div>
+      <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>{actions}</div>
     </div>
   );
 }
 
 function Btn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} className="active-scale" style={{ width: 26, height: 26, borderRadius: 7, background: '#1E1E38', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+    <button onClick={onClick} className="active-scale" style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(30,41,59,0.8)', border: `1px solid ${C.glassBorder}`, backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
       {children}
     </button>
   );
 }
 
 const linkBtnStyle: React.CSSProperties = {
-  display: 'flex', alignItems: 'center', gap: 2,
-  color: '#3B82F6', fontSize: 11, fontWeight: 600,
+  display: 'flex', alignItems: 'center', gap: 3,
+  color: C.blue, fontSize: 11, fontWeight: 700,
   background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+  transition: 'all 0.15s',
 };
 
 const labelStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-  minWidth: 20, height: 18, borderRadius: 9,
-  background: 'rgba(59,130,246,0.2)', color: '#60A5FA',
-  fontSize: 10, fontWeight: 700, padding: '0 5px',
+  minWidth: 22, height: 20, borderRadius: 10,
+  background: `${C.blue}25`, color: C.blue,
+  fontSize: 10, fontWeight: 700, padding: '0 6px',
+  border: `1px solid ${C.blue}40`,
 };
