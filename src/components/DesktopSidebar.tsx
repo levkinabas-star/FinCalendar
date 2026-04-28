@@ -1,4 +1,4 @@
-import { Home, CreditCard, Calendar, BarChart2, Plus, Settings, Star, Wallet } from 'lucide-react';
+import { Home, CreditCard, Calendar, BarChart2, Plus, Settings, Star } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useStore } from '../store';
 import { translations } from '../translations';
@@ -61,21 +61,17 @@ export default function DesktopSidebar({ onAddTransaction }: Props) {
       {/* Logo header */}
       <div style={{ padding: '20px 20px 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div
+          <img
+            src="/icon-192.png"
+            alt="FinCalendar"
             style={{
               width: 40,
               height: 40,
               borderRadius: 12,
-              background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.35)',
               flexShrink: 0,
+              objectFit: 'cover',
             }}
-          >
-            <Wallet size={20} color="white" />
-          </div>
+          />
           <div>
             <p style={{ fontSize: 16, fontWeight: 700, color: colors.text, lineHeight: 1.2 }}>
               FinCalendar

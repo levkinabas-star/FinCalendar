@@ -190,7 +190,7 @@ export function useSmartNotifications() {
       } else if (hasBrowserNotifs) {
         items.slice(0, 3).forEach((item) => {
           try {
-            new Notification(item.title, { body: item.message, icon: '/favicon.ico' });
+            new Notification(item.title, { body: item.message, icon: '/icon-192.png' });
           } catch { /* non-critical */ }
         });
       }

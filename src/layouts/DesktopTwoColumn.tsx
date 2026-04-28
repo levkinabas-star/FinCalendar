@@ -2,7 +2,7 @@ import { useState, useMemo, lazy, Suspense } from 'react';
 import { format, parseISO, isToday, isYesterday } from 'date-fns';
 import {
   TrendingUp, TrendingDown, ArrowLeftRight, Pencil, Trash2, RotateCcw,
-  ChevronRight, RefreshCw, Plus, Settings, Wallet, Star, BarChart2,
+  ChevronRight, RefreshCw, Plus, Settings, Star, BarChart2,
   CalendarDays, PiggyBank,
 } from 'lucide-react';
 import { useStore } from '../store';
@@ -201,9 +201,7 @@ export default function DesktopTwoColumn() {
       <header style={{ height: 56, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${C.glassBorder}`, flexShrink: 0, gap: 12, backdropFilter: 'blur(12px)', background: 'rgba(7,7,15,0.8)' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 12, background: 'linear-gradient(135deg,#3B82F6,#6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: C.shadowGlowBlue }}>
-            <Wallet size={18} color="white" />
-          </div>
+          <img src="/icon-192.png" alt="FinCalendar" style={{ width: 36, height: 36, borderRadius: 12, flexShrink: 0, objectFit: 'cover' }} />
           <div>
             <span style={{ color: C.text, fontSize: 16, fontWeight: 700 }}>FinCalendar</span>
             {plan === 'pro' && (
